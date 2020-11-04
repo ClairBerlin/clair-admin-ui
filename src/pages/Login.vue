@@ -63,23 +63,28 @@ export default defineComponent({
   },
   methods: {
     onSubmit() {
-      console.log('a button was pressed!!!');
-      // TODO: place axios magic here
-      if (this.username !== 'admin') {
-        this.$q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: 'Login failed'
+      this.$store
+        .dispatch('user/login', {
+          username: this.username,
+          password: this.password
+        })
+        .then(() => {
+          this.$q.notify({
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            message: 'TODO: Forward to Dashboard'
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          this.$q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'Login failed'
+          });
         });
-      } else {
-        this.$q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: 'TODO: Forward to Dashboard'
-        });
-      }
     }
   }
 });
