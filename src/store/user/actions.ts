@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../index';
 import { UserState } from './state';
-import axios from 'axios'; // TODO get from this?
+import axios from 'axios';
 
 interface Token {
   id: string;
