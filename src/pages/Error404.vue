@@ -1,5 +1,7 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
+  <div
+    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
+  >
     <div>
       <div style="font-size: 30vh">
         404
@@ -26,6 +28,6 @@
 import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
-  name: 'Error404',
+  name: 'Error404'
 });
 </script>
