@@ -3,6 +3,10 @@ import { StateInterface } from '../index';
 import { UserState } from './state';
 import axios from 'axios';
 
+interface ServerResponse {
+  data: Token;
+}
+
 interface Token {
   id: string;
 }
@@ -14,11 +18,11 @@ const actions: ActionTree<UserState, StateInterface> = {
     params.append('password', password);
     return new Promise((resolve, reject) => {
       axios
-        .post<Token>('/auth/login/', params)
+        .post<ServerResponse>('/auth/login/', params)
         .then(response => {
-          const token = response.data;
-          context.commit('SET_TOKEN', token.id);
-          setAxiosHeaders(token.id);
+          const token = response.data.data.id;
+          context.commit('SET_TOKEN', token);
+          setAxiosHeaders(token);
           resolve();
         })
         .catch(error => {
@@ -30,7 +34,7 @@ const actions: ActionTree<UserState, StateInterface> = {
 
 function setAxiosHeaders(token: string) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  axios.defaults.headers.common['Authorization'] = 'Basic ' + token;
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
 
 export default actions;
