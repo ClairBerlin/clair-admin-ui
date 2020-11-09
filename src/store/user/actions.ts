@@ -18,7 +18,7 @@ const actions: ActionTree<UserState, StateInterface> = {
     params.append('password', password);
     return new Promise((resolve, reject) => {
       axios
-        .post<ServerResponse>('/auth/login/', params)
+        .post<ServerResponse>('/api/v1/auth/login/', params)
         .then(response => {
           const token = response.data.data.id;
           context.commit('SET_TOKEN', token);
