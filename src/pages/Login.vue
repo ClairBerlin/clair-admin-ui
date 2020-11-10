@@ -61,20 +61,21 @@ export default defineComponent({
       username: ''
     };
   },
+  created() {
+    if (this.$q.cookies.has('csrftoken')) {
+      return this.$router.push({ name: 'dashboard' });
+    }
+  },
   methods: {
     onSubmit() {
+      this.$q.loading.show();
       this.$store
         .dispatch('user/login', {
           username: this.username,
           password: this.password
         })
         .then(() => {
-          this.$q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'TODO: Forward to Dashboard'
-          });
+          return this.$router.push({ name: 'dashboard' });
         })
         .catch(error => {
           console.log(error);
@@ -84,7 +85,8 @@ export default defineComponent({
             icon: 'warning',
             message: 'Login failed'
           });
-        });
+        })
+        .finally(() => this.$q.loading.hide());
     }
   }
 });

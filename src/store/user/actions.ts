@@ -22,19 +22,33 @@ const actions: ActionTree<UserState, StateInterface> = {
         .then(response => {
           const token = response.data.data.id;
           context.commit('SET_TOKEN', token);
-          setAxiosHeaders(token);
+          setAuthHeader(token);
           resolve();
         })
-        .catch(error => {
-          reject(error);
-        });
+        .catch(error => reject(error));
+    });
+  },
+  logout(context) {
+    return new Promise((resolve, reject) => {
+      axios
+        .post('/api/v1/auth/logout/')
+        .then(() => {
+          context.commit('REMOVE_TOKEN');
+          removeAuthHeader();
+          resolve();
+        })
+        .catch(error => reject(error));
     });
   }
 };
 
-function setAxiosHeaders(token: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+function setAuthHeader(token: string) {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
+
+function removeAuthHeader() {
+  delete axios.defaults.headers.common['Authorization'];
 }
 
 export default actions;

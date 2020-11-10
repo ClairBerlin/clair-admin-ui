@@ -5,15 +5,20 @@ const routes: RouteConfig[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Login.vue') }
-      // { path: 'dashboard', component: () => import('pages/Dashboard.vue') },
+      { path: '', name: 'login', component: () => import('pages/Login.vue') },
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: () => import('pages/Dashboard.vue'),
+        meta: { requiresAuth: true }
+      }
     ]
   },
 
   // map all other requests to 404
   {
     path: '*',
-    component: () => import('pages/Error404.vue')
+    component: () => import('pages/NotFound.vue')
   }
 ];
 

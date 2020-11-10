@@ -6,6 +6,14 @@
         <q-toolbar-title class="clair-title">
           Clair Admin UI
         </q-toolbar-title>
+        <q-btn
+          v-if="isLoggedIn()"
+          flat
+          dense
+          round
+          @click="logout()"
+          icon="exit_to_app"
+        />
       </q-toolbar>
     </q-header>
 
@@ -19,7 +27,31 @@
 import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
-  name: 'MainLayout'
+  name: 'MainLayout',
+  methods: {
+    isLoggedIn() {
+      return this.$store.getters['user/isLoggedIn'];
+    },
+    logout() {
+      this.$q.loading.show();
+      this.$store
+        .dispatch('user/logout')
+        .then(() => {
+          this.$q.cookies.remove('csrftoken');
+          return this.$router.push({ name: 'login' });
+        })
+        .catch(error => {
+          console.log(error);
+          this.$q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'Logout failed'
+          });
+        })
+        .finally(() => this.$q.loading.hide());
+    }
+  }
 });
 </script>
 
