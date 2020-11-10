@@ -30,6 +30,7 @@ export default defineComponent({
   name: 'MainLayout',
   methods: {
     isLoggedIn() {
+      // eslint-disable-next-line
       return this.$store.getters['user/isLoggedIn'];
     },
     logout() {
