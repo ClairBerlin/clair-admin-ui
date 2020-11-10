@@ -5,6 +5,10 @@
   "productName": "Clair Admin UI",
   "author": "Christian Rotzoll <ch.rotzoll@gmail.com>",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ClairBerlin/clair-admin-ui.git"
+  },
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
