@@ -8,16 +8,16 @@
       </div>
 
       <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
+        {{ $t('Oops. Nothing here...') }}
       </div>
 
       <q-btn
-        class="q-mt-xl"
+        class="q-mt-xl float-right"
         color="white"
         text-color="blue"
         unelevated
         to="/"
-        label="Go Home"
+        :label="$t('Go Home')"
         no-caps
       />
     </div>
