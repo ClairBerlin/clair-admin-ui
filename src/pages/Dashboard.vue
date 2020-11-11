@@ -3,7 +3,7 @@
     <q-card class="row shadow-8">
       <q-card-section>
         <div>
-          <div style="font-size: 15vh">
+          <div style="font-size: 5vh">
             Dashboard content
           </div>
 
