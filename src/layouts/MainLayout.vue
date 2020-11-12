@@ -15,6 +15,23 @@
         <q-toolbar-title class="clair-title">
           Clair Admin UI
         </q-toolbar-title>
+
+        <q-btn-dropdown round dense flat color="white" :label="$i18n.locale">
+          <q-list style="min-width: 100px">
+            <q-item
+              clickable
+              v-close-popup
+              v-for="option in langOptions"
+              :key="option.value"
+              @click="setLang(option.value)"
+            >
+              <q-item-section>
+                <q-item-label>{{ option.label }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+
         <q-btn
           class="q-mr-xs"
           flat
@@ -55,7 +72,7 @@
               <q-icon :name="item.icon" />
             </q-item-section>
             <q-item-section>
-              {{ item.label }}
+              {{ $t(item.label) }}
             </q-item-section>
           </q-item>
           <q-separator :key="'sep' + index" v-if="item.separator" />
@@ -90,9 +107,10 @@ const items = [
   new MenuItem('cloud', 'Overview', 'dashboard', true),
   new MenuItem('fa fa-sitemap', 'Organisation', 'orgs'),
   new MenuItem('fa fa-map-marker', 'Locations', 'locations'),
+  new MenuItem('fa fa-cube', 'Rooms', 'rooms'),
   new MenuItem('fa fa-thermometer-half', 'Sensors', 'sensors', true),
   new MenuItem('settings', 'Settings', 'settings'),
-  new MenuItem('feedback', 'Send Feedback', 'feedback'),
+  new MenuItem('feedback', 'Feedback', 'feedback'),
   new MenuItem('help', 'Help', 'help')
 ];
 
@@ -100,10 +118,17 @@ export default defineComponent({
   name: 'MainLayout',
   setup() {
     const leftDrawerOpen = ref(true);
+    const langOptions = [
+      { value: 'en', label: 'English' },
+      { value: 'de', label: 'Deutsch' }
+    ];
     const selected = ref('dashboard');
-    return { leftDrawerOpen, selected, items };
+    return { leftDrawerOpen, langOptions, selected, items };
   },
   methods: {
+    setLang(lang: string) {
+      this.$i18n.locale = lang;
+    },
     isLoggedIn() {
       // eslint-disable-next-line
       return this.$store.getters['user/isLoggedIn'];
@@ -122,7 +147,7 @@ export default defineComponent({
             color: 'red-5',
             textColor: 'white',
             icon: 'warning',
-            message: 'Logout failed'
+            message: this.$t('Logout failed').toString()
           });
         })
         .finally(() => this.$q.loading.hide());

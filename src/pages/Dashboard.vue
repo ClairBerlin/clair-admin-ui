@@ -4,16 +4,16 @@
       <q-card-section>
         <div>
           <div style="font-size: 5vh">
-            Dashboard content
+            Dashboard
           </div>
 
           <q-btn
-            class="q-mt-xl"
+            class="q-mt-xl float-right"
             color="white"
             text-color="blue"
             unelevated
             to="/"
-            label="Go Home"
+            :label="$t('Go Home')"
             no-caps
           />
         </div>

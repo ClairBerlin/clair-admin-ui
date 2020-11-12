@@ -3,15 +3,15 @@
     <q-card class="row shadow-8">
       <q-card-section>
         <q-form @submit="onSubmit" class="q-gutter-md">
-          <h4>Login</h4>
+          <h4>{{ $t('Login') }}</h4>
           <q-input
             class="inset-shadow"
             filled
             v-model="username"
-            label="Username"
+            :label="$t('Username')"
             lazy-rules
             :rules="[
-              val => (val && val.length > 0) || 'Please enter your username'
+              val => (val && val.length > 0) || $t('Please enter your username')
             ]"
           />
 
@@ -19,11 +19,11 @@
             class="inset-shadow"
             filled
             v-model="password"
-            label="Password"
+            :label="$t('Password')"
             :type="isPwd ? 'password' : 'text'"
             lazy-rules
             :rules="[
-              val => (val && val.length > 0) || 'Please enter your password'
+              val => (val && val.length > 0) || $('Please enter your password')
             ]"
           >
             <template v-slot:append>
@@ -35,14 +35,12 @@
             </template>
           </q-input>
 
-          <div>
-            <q-btn
-              class="shadow-4"
-              label="Submit"
-              type="submit"
-              color="primary"
-            />
-          </div>
+          <q-btn
+            class="shadow-4 float-right"
+            :label="$t('Submit')"
+            type="submit"
+            color="primary"
+          />
         </q-form>
       </q-card-section>
     </q-card>
@@ -83,7 +81,7 @@ export default defineComponent({
             color: 'red-5',
             textColor: 'white',
             icon: 'warning',
-            message: 'Login failed'
+            message: this.$t('Login failed').toString()
           });
         })
         .finally(() => this.$q.loading.hide());
