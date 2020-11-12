@@ -147,7 +147,7 @@ export default defineComponent({
             color: 'red-5',
             textColor: 'white',
             icon: 'warning',
-            message: 'Logout failed'
+            message: this.$t('Logout failed').toString()
           });
         })
         .finally(() => this.$q.loading.hide());
