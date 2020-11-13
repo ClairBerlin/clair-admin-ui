@@ -3,5 +3,5 @@ import de from './de';
 
 export default {
   en: enUS,
-  de: de
+  de: de,
 };

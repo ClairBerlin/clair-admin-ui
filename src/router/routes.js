@@ -1,6 +1,4 @@
-import { RouteConfig } from 'vue-router';
-
-const routes: RouteConfig[] = [
+const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
@@ -10,16 +8,16 @@ const routes: RouteConfig[] = [
         path: 'dashboard',
         name: 'dashboard',
         component: () => import('pages/Dashboard.vue'),
-        meta: { requiresAuth: true }
-      }
-    ]
+        meta: { requiresAuth: true },
+      },
+    ],
   },
 
   // map all other requests to 404
   {
     path: '*',
-    component: () => import('pages/NotFound.vue')
-  }
+    component: () => import('pages/NotFound.vue'),
+  },
 ];
 
 export default routes;

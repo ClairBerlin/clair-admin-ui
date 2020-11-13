@@ -28,5 +28,5 @@ export default {
   'Oops. Nothing here...': 'Wie Sie sehen, sehen Sie nichts...',
 
   // Dashboard
-  'Go Home': 'Nach Hause telefonieren'
+  'Go Home': 'Nach Hause telefonieren',
 };
