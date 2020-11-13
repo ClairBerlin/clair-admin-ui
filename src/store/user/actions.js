@@ -1,31 +1,20 @@
-import { ActionTree } from 'vuex';
-import { StateInterface } from '../index';
-import { UserState } from './state';
 import axios from 'axios';
 
-interface ServerResponse {
-  data: Token;
-}
-
-interface Token {
-  id: string;
-}
-
-const actions: ActionTree<UserState, StateInterface> = {
+const actions = {
   login(context, { username, password }) {
     const params = new URLSearchParams();
     params.append('username', username);
     params.append('password', password);
     return new Promise((resolve, reject) => {
       axios
-        .post<ServerResponse>('/api/v1/auth/login/', params)
-        .then(response => {
+        .post('/api/v1/auth/login/', params)
+        .then((response) => {
           const token = response.data.data.id;
           context.commit('SET_TOKEN', token);
           setAuthHeader(token);
           resolve();
         })
-        .catch(error => reject(error));
+        .catch((error) => reject(error));
     });
   },
   logout(context) {
@@ -37,13 +26,12 @@ const actions: ActionTree<UserState, StateInterface> = {
           removeAuthHeader();
           resolve();
         })
-        .catch(error => reject(error));
+        .catch((error) => reject(error));
     });
-  }
+  },
 };
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-function setAuthHeader(token: string) {
+function setAuthHeader(token) {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 }
 

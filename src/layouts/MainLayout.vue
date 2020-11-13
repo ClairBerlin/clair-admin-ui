@@ -86,16 +86,9 @@
   </q-layout>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
-
+<script>
 class MenuItem {
-  icon: string;
-  label: string;
-  link: string;
-  separator: boolean;
-
-  constructor(icon: string, label: string, link: string, separator = false) {
+  constructor(icon, label, link, separator = false) {
     this.icon = icon;
     this.label = label;
     this.link = link;
@@ -114,19 +107,21 @@ const items = [
   new MenuItem('help', 'Help', 'help')
 ];
 
-export default defineComponent({
+export default {
   name: 'MainLayout',
-  setup() {
-    const leftDrawerOpen = ref(true);
-    const langOptions = [
-      { value: 'en', label: 'English' },
-      { value: 'de', label: 'Deutsch' }
-    ];
-    const selected = ref('dashboard');
-    return { leftDrawerOpen, langOptions, selected, items };
+  data() {
+    return {
+      leftDrawerOpen: true,
+      langOptions: [
+        { value: 'en', label: 'English' },
+        { value: 'de', label: 'Deutsch' }
+      ],
+      selected: 'dashboard',
+      items: items
+    };
   },
   methods: {
-    setLang(lang: string) {
+    setLang(lang) {
       this.$i18n.locale = lang;
     },
     isLoggedIn() {
@@ -153,7 +148,7 @@ export default defineComponent({
         .finally(() => this.$q.loading.hide());
     }
   }
-});
+};
 </script>
 
 <style lang="scss" scoped>

@@ -47,10 +47,8 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent } from '@vue/composition-api';
-
-export default defineComponent({
+<script>
+export default {
   name: 'Login',
   data() {
     return {
@@ -87,7 +85,7 @@ export default defineComponent({
         .finally(() => this.$q.loading.hide());
     }
   }
-});
+};
 </script>
 
 <style lang="scss" scoped></style>
