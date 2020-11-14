@@ -1072,6 +1072,18 @@
   resolved "https://registry.yarnpkg.com/@quasar/fastclick/-/fastclick-1.1.4.tgz#21ed3e9a4387dcb43022a08af4ef08a5f1abf159"
   integrity sha512-i9wbyV4iT+v4KhtHJynUFhH5LiEPvAEgSnwMqPN4hf/8uRe82nDl5qP5agrp2el1h0HzyBpbvHaW7NB0BPrtvA==
 
+"@reststate/client@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@reststate/client/-/client-0.0.8.tgz#e5b0c2786adb4cda425d28cd4b6a1421d8b8270e"
+  integrity sha512-j7qw2nNvWvGQTRRfhTvfvSAUOoDKoBJ2SNAXcFw1XWk9bogFXXGg4NZzpgIqqqf9LBYrt74Rv8v5VfcrAiq/1g==
+
+"@reststate/vuex@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@reststate/vuex/-/vuex-0.2.3.tgz#e0f15a55d5f6fb1a0375fe227f9ada6d09c4da9b"
+  integrity sha512-KN/2g1nQn8pBYK/1pSpXSM4jZuyUdW6Kcv5d8D4Cz0Pasjghc4swOcgPzyuugDFycAHzBp7uF/dhD5HQSB2BKw==
+  dependencies:
+    "@reststate/client" "^0.0.8"
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
