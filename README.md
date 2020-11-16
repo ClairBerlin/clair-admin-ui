@@ -10,6 +10,7 @@ This project was set up using the [Quasar CLI](https://quasar.dev/start/quasar-c
 
 ```bash
 yarn
+(cd node_modules && patch -p0 < ../@reststate.patch)
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
