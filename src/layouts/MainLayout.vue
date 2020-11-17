@@ -11,7 +11,7 @@
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
-        <q-icon class="clair-logo" name="img:icons/favicon-96x96.png" />
+        <img class="clair-logo" src="~assets/clair-logo.svg" />
         <q-toolbar-title class="clair-title">
           Clair Admin UI
         </q-toolbar-title>
@@ -156,11 +156,11 @@ export default {
 
 <style lang="scss" scoped>
 .clair-logo {
-  font-size: 4em;
-  padding: 10px;
+  height: 50px;
+  padding: 5px 10px 5px 10px;
 }
 .clair-title {
   font-size: 2em;
-  padding: 5px;
+  padding: 10px;
 }
 </style>
