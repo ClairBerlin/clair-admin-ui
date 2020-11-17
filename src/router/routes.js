@@ -8,16 +8,16 @@ const routes = [
         path: 'dashboard',
         name: 'dashboard',
         component: () => import('pages/Dashboard.vue'),
-        meta: { requiresAuth: true },
-      },
-    ],
+        meta: { requiresAuth: true }
+      }
+    ]
   },
 
   // map all other requests to 404
   {
     path: '*',
-    component: () => import('pages/NotFound.vue'),
-  },
+    component: () => import('pages/NotFound.vue')
+  }
 ];
 
 export default routes;

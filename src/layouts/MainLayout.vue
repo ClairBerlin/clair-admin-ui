@@ -87,6 +87,9 @@
 </template>
 
 <script>
+import de from 'quasar/lang/de';
+import en from 'quasar/lang/en-us';
+
 class MenuItem {
   constructor(icon, label, link, separator = false) {
     this.icon = icon;
@@ -98,7 +101,7 @@ class MenuItem {
 
 const items = [
   new MenuItem('cloud', 'Overview', 'dashboard', true),
-  new MenuItem('fa fa-sitemap', 'Organisation', 'orgs'),
+  new MenuItem('fa fa-sitemap', 'Organizations', 'orgs'),
   new MenuItem('fa fa-map-marker', 'Locations', 'locations'),
   new MenuItem('fa fa-cube', 'Rooms', 'rooms'),
   new MenuItem('fa fa-thermometer-half', 'Sensors', 'sensors', true),
@@ -123,9 +126,9 @@ export default {
   methods: {
     setLang(lang) {
       this.$i18n.locale = lang;
+      this.$q.lang.set(lang === 'en' ? en : de);
     },
     isLoggedIn() {
-      // eslint-disable-next-line
       return this.$store.getters['user/isLoggedIn'];
     },
     logout() {

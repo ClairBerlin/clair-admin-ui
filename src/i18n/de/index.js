@@ -6,7 +6,7 @@ export default {
   Login: 'Anmeldung',
   Username: 'Nutzername',
   Password: 'Passwort',
-  Submit: 'einloggen',
+  Submit: 'Einloggen',
   'Please enter your username': 'Bitte geben Sie Ihren Nuternamen ein',
   'Please enter your password': 'Bitte geben Sie Ihr Passwort ein',
   'Login failed': 'Anmeldung ist fehlgeschlagen',
@@ -16,7 +16,7 @@ export default {
 
   // Menu
   Overview: 'Überblick',
-  Organisation: 'Organisation',
+  Organizations: 'Organisationen',
   Locations: 'Orte',
   Rooms: 'Räume',
   Sensors: 'Sensoren',
@@ -28,5 +28,5 @@ export default {
   'Oops. Nothing here...': 'Wie Sie sehen, sehen Sie nichts...',
 
   // Dashboard
-  'Go Home': 'Nach Hause telefonieren',
+  'Go Home': 'Zur Startseite'
 };
