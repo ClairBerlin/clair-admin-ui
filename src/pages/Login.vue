@@ -58,7 +58,7 @@ export default {
     };
   },
   created() {
-    if (this.$q.cookies.has('csrftoken')) {
+    if (this.isLoggedIn()) {
       return this.$router.push({ name: 'dashboard' });
     }
   },
@@ -83,6 +83,9 @@ export default {
           });
         })
         .finally(() => this.$q.loading.hide());
+    },
+    isLoggedIn() {
+      return this.$store.getters['user/isLoggedIn'];
     }
   }
 };
