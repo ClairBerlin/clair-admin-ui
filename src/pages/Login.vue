@@ -23,7 +23,7 @@
             :type="isPwd ? 'password' : 'text'"
             lazy-rules
             :rules="[
-              val => (val && val.length > 0) || $('Please enter your password')
+              val => (val && val.length > 0) || $t('Please enter your password')
             ]"
           >
             <template v-slot:append>
