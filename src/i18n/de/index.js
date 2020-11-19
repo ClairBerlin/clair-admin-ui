@@ -16,10 +16,12 @@ export default {
 
   // Menu
   Overview: 'Überblick',
+  Manage: 'Verwalten',
   Organizations: 'Organisationen',
   Locations: 'Orte',
   Rooms: 'Räume',
   Sensors: 'Sensoren',
+  Installations: 'Installationen',
   Settings: 'Einstellungen',
   Feedback: 'Feedback',
   Help: 'Hilfe',

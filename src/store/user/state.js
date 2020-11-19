@@ -1,5 +1,6 @@
-const state = {
-  token: localStorage.getItem('token') || null,
-};
-
-export default state;
+export default function() {
+  return {
+    token: localStorage.getItem('token') || null,
+    id: null
+  };
+}

@@ -7,6 +7,9 @@ const mutation = {
     user.token = null;
     localStorage.removeItem('token');
   },
+  SET_ID(user, id) {
+    user.id = id;
+  }
 };
 
 export default mutation;

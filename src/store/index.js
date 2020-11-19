@@ -20,7 +20,7 @@ export default (function() {
     modules: {
       user,
       ...mapResourceModules({
-        names: ['organizations', 'sites', 'rooms', 'nodes'],
+        names: ['users', 'organizations', 'sites', 'rooms', 'nodes'],
         httpClient
       })
     },
