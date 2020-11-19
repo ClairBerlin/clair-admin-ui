@@ -33,13 +33,6 @@
         </q-btn-dropdown>
 
         <q-btn
-          class="q-mr-xs"
-          flat
-          round
-          @click="$q.dark.toggle()"
-          :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
-        />
-        <q-btn
           v-if="isLoggedIn()"
           flat
           dense
@@ -54,11 +47,58 @@
       v-if="isLoggedIn()"
       v-model="leftDrawerOpen"
       show-if-above
-      :width="200"
+      :width="220"
       :breakpoint="500"
       bordered
     >
+      <div class="q-pa-md row flex-center">
+        <q-btn-dropdown :label="selectedOrg" v-if="orgs.length > 1">
+          <q-list style="min-width: 100px">
+            <q-item
+              :v-model="selected"
+              clickable
+              v-close-popup
+              v-for="org in orgs"
+              :key="org"
+              @click="selectedOrg = org"
+            >
+              <q-item-section>
+                <q-item-label>{{ org }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+        <q-btn disable :label="selectedOrg" v-else />
+      </div>
+
+      <q-separator />
       <q-list>
+        <q-expansion-item
+          key="manage"
+          :label="$t('Manage')"
+          icon="settings"
+          default-opened
+        >
+          <template v-for="(item, index) in manageItems">
+            <q-item
+              :inset-level="0.5"
+              clickable
+              v-ripple
+              :key="index"
+              :acive="selected === item.link"
+              @click="selected = item.link"
+              :to="item.link"
+            >
+              <q-item-section avatar>
+                <q-icon :name="item.icon" />
+              </q-item-section>
+              <q-item-section>
+                {{ $t(item.label) }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-expansion-item>
+        <q-separator />
         <template v-for="(item, index) in items">
           <q-item
             clickable
@@ -75,7 +115,6 @@
               {{ $t(item.label) }}
             </q-item-section>
           </q-item>
-          <q-separator :key="'sep' + index" v-if="item.separator" />
         </template>
       </q-list>
     </q-drawer>
@@ -90,25 +129,30 @@
 import de from 'quasar/lang/de';
 import en from 'quasar/lang/en-us';
 
+import { mapActions, mapGetters } from 'vuex';
+
 class MenuItem {
-  constructor(icon, label, link, separator = false) {
+  constructor(icon, label, link) {
     this.icon = icon;
     this.label = label;
     this.link = link;
-    this.separator = separator;
   }
 }
 
-const items = [
-  new MenuItem('cloud', 'Overview', 'dashboard', true),
-  new MenuItem('fa fa-sitemap', 'Organizations', 'orgs'),
+const manageItems = [
+  new MenuItem('fa fa-sitemap', 'Organizations', 'organizations'),
   new MenuItem('fa fa-map-marker', 'Locations', 'locations'),
   new MenuItem('fa fa-cube', 'Rooms', 'rooms'),
-  new MenuItem('fa fa-thermometer-half', 'Sensors', 'sensors', true),
-  new MenuItem('settings', 'Settings', 'settings'),
+  new MenuItem('fa fa-thermometer-half', 'Sensors', 'sensors'),
+  new MenuItem('fa fa-tools', 'Installations', 'installations')
+];
+const items = [
   new MenuItem('feedback', 'Feedback', 'feedback'),
   new MenuItem('help', 'Help', 'help')
 ];
+
+const orgs = [];
+const selectedOrg = '-';
 
 export default {
   name: 'MainLayout',
@@ -120,10 +164,46 @@ export default {
         { value: 'de', label: 'Deutsch' }
       ],
       selected: 'dashboard',
-      items: items
+      items: items,
+      manageItems: manageItems,
+      orgs: orgs,
+      selectedOrg: selectedOrg
     };
   },
+  computed: {
+    ...mapGetters({
+      getUserById: 'users/byId',
+      getOrgsRelated: 'organizations/related'
+    })
+  },
+  mounted() {
+    if (this.isLoggedIn()) {
+      this.loadUserOrgs();
+    }
+  },
   methods: {
+    ...mapActions({
+      loadUserById: 'users/loadById',
+      loadOrgsRelated: 'organizations/loadRelated'
+    }),
+    loadUserOrgs: async function() {
+      const uid = await this.$store.dispatch('user/getUserId');
+      await this.loadUserById({ id: uid });
+      let parent = { type: 'users', id: uid };
+      await this.loadOrgsRelated({ parent });
+      const orgs = this.getOrgsRelated({ parent });
+      console.log(orgs);
+      const orgNames = orgs.map(org => this.truncateName(org.attributes.name));
+      this.orgs = orgNames;
+      // FIXME: this should trigger and update of org selection, but doesn't
+      this.selectedOrg = orgNames[0];
+    },
+    truncateName(name, maxLength = 15) {
+      if (name.length > maxLength) {
+        return name.substring(0, maxLength) + ' ...';
+      }
+      return name;
+    },
     setLang(lang) {
       this.$i18n.locale = lang;
       this.$q.lang.set(lang === 'en' ? en : de);

@@ -8,13 +8,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       axios
         .post('/api/v1/auth/login/', params)
-        .then((response) => {
+        .then(response => {
           const token = response.data.data.id;
           context.commit('SET_TOKEN', token);
           setAuthHeader(token);
           resolve();
         })
-        .catch((error) => reject(error));
+        .catch(error => reject(error));
     });
   },
   logout(context) {
@@ -26,9 +26,21 @@ const actions = {
           removeAuthHeader();
           resolve();
         })
-        .catch((error) => reject(error));
+        .catch(error => reject(error));
     });
   },
+  getUserId(context) {
+    return new Promise((resolve, reject) => {
+      axios
+        .get('/api/v1/auth/user')
+        .then(response => {
+          const userId = response.data.data.id;
+          context.commit('SET_ID', { userId });
+          resolve(userId);
+        })
+        .catch(error => reject(error));
+    });
+  }
 };
 
 function setAuthHeader(token) {
