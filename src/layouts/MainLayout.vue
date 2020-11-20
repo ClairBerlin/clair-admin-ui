@@ -45,6 +45,7 @@
 
     <q-drawer
       v-if="isLoggedIn()"
+      @hook:mounted="loadUserOrgs()"
       v-model="leftDrawerOpen"
       show-if-above
       :width="220"
@@ -52,23 +53,22 @@
       bordered
     >
       <div class="q-pa-md row flex-center">
-        <q-btn-dropdown :label="selectedOrg" v-if="orgs.length > 1">
+        <q-btn-dropdown :label="toLabel(selectedOrg)" v-if="orgs.length > 1">
           <q-list style="min-width: 100px">
             <q-item
-              :v-model="selected"
               clickable
               v-close-popup
               v-for="org in orgs"
-              :key="org"
+              :key="org.id"
               @click="selectedOrg = org"
             >
               <q-item-section>
-                <q-item-label>{{ org }}</q-item-label>
+                <q-item-label>{{ org.attributes.name }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <q-btn disable :label="selectedOrg" v-else />
+        <q-btn disable :label="toLabel(selectedOrg)" v-else />
       </div>
 
       <q-separator />
@@ -152,7 +152,7 @@ const items = [
 ];
 
 const orgs = [];
-const selectedOrg = '-';
+const selectedOrg = null;
 
 export default {
   name: 'MainLayout',
@@ -163,7 +163,7 @@ export default {
         { value: 'en', label: 'English' },
         { value: 'de', label: 'Deutsch' }
       ],
-      selected: 'dashboard',
+      selected: '-',
       items: items,
       manageItems: manageItems,
       orgs: orgs,
@@ -176,11 +176,6 @@ export default {
       getOrgsRelated: 'organizations/related'
     })
   },
-  mounted() {
-    if (this.isLoggedIn()) {
-      this.loadUserOrgs();
-    }
-  },
   methods: {
     ...mapActions({
       loadUserById: 'users/loadById',
@@ -192,17 +187,17 @@ export default {
       let parent = { type: 'users', id: uid };
       await this.loadOrgsRelated({ parent });
       const orgs = this.getOrgsRelated({ parent });
-      console.log(orgs);
-      const orgNames = orgs.map(org => this.truncateName(org.attributes.name));
-      this.orgs = orgNames;
-      // FIXME: this should trigger and update of org selection, but doesn't
-      this.selectedOrg = orgNames[0];
+      this.orgs = orgs;
+      this.selectedOrg = orgs[0];
     },
-    truncateName(name, maxLength = 15) {
-      if (name.length > maxLength) {
-        return name.substring(0, maxLength) + ' ...';
+    toLabel(org, maxLength = 15) {
+      if (!org) {
+        return '-';
       }
-      return name;
+      if (org.attributes.name.length > maxLength) {
+        return org.attributes.name.substring(0, maxLength) + ' ...';
+      }
+      return org.attributes.name;
     },
     setLang(lang) {
       this.$i18n.locale = lang;
