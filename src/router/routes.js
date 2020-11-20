@@ -3,9 +3,13 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', name: 'login', component: () => import('pages/Login.vue') },
       {
-        path: 'dashboard',
+        path: 'login',
+        name: 'login',
+        component: () => import('pages/Login.vue')
+      },
+      {
+        path: '',
         name: 'dashboard',
         component: () => import('pages/Dashboard.vue'),
         meta: { requiresAuth: true }
