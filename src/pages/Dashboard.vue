@@ -12,7 +12,7 @@
             color="white"
             text-color="blue"
             unelevated
-            to="/"
+            to="/installations/1"
             :label="$t('Go Home')"
             no-caps
           />

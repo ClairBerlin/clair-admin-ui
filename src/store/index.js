@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-import { mapResourceModules } from '@reststate/vuex';
+import { resourceModule, mapResourceModules } from '@reststate/vuex';
 import user from './user';
 
 Vue.use(Vuex);
@@ -19,8 +19,21 @@ export default (function() {
   const Store = new Vuex.Store({
     modules: {
       user,
+      // TODO: do we need this?
+      Address: resourceModule({
+        name: 'addresses',
+        httpClient: httpClient
+      }),
       ...mapResourceModules({
-        names: ['users', 'organizations', 'sites', 'rooms', 'nodes'],
+        names: [
+          'users',
+          'organizations',
+          'sites',
+          'rooms',
+          'nodes',
+          'installations',
+          'installation-timeseries'
+        ],
         httpClient
       })
     },
