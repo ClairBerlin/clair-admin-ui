@@ -70,9 +70,15 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import SampleGraph from '../components/SampleGraph.vue';
-import moment from 'moment';
+// import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
+import minMax from 'dayjs/plugin/minMax';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/de';
 
-moment.locale('de');
+dayjs.extend(minMax);
+dayjs.extend(relativeTime);
+dayjs.locale('de');
 
 export default {
   components: {
@@ -85,13 +91,13 @@ export default {
       installationId: -1,
       activeTabIndex: 0,
       loading: 0,
-      displayedFromMoment: moment().startOf('day'),
-      oldestSampleMoment: moment()
+      displayedFromMoment: dayjs().startOf('day'),
+      oldestSampleMoment: dayjs()
         .subtract(4, 'w')
         .startOf('month'),
       samplePool: [],
-      sampleGraphWidth: '98%',
-      sampleGraphHeight: 'calc(100vh - 200px)',
+      sampleGraphWidth: '400px',
+      sampleGraphHeight: '400px',
       refreshTimerId: -1
     };
   },
@@ -113,16 +119,16 @@ export default {
       ][this.activeTabIndex];
     },
     currentFromMoment: function() {
-      return moment().startOf('day');
+      return dayjs().startOf('day');
     },
     nextFromMoment: function() {
       return [
         this.displayedFromMoment.clone().add(1, 'd'),
-        moment.min(
+        dayjs.min(
           this.currentFromMoment,
           this.displayedFromMoment.clone().add(1, 'w')
         ),
-        moment.min(
+        dayjs.min(
           this.currentFromMoment,
           this.displayedFromMoment.clone().add(1, 'M')
         )
@@ -139,10 +145,11 @@ export default {
     },
 
     displayedDayMoments: function() {
-      var displayedDayToMoment = this.displayedFromMoment.clone();
+      const displayedFromMoment = dayjs(this.displayedFromMoment);
+      var displayedDayToMoment = dayjs(this.displayedFromMoment);
       displayedDayToMoment.add(1, 'd');
       return {
-        from: this.displayedFromMoment,
+        from: displayedFromMoment,
         to: displayedDayToMoment
       };
     },
@@ -154,7 +161,7 @@ export default {
     },
 
     displayedWeekMoments: function() {
-      var displayedWeekFromMoment = moment(this.displayedFromMoment).startOf(
+      var displayedWeekFromMoment = dayjs(this.displayedFromMoment).startOf(
         'isoWeek'
       );
       var displayedWeekToMoment = displayedWeekFromMoment.clone();
@@ -172,7 +179,7 @@ export default {
     },
 
     displayedMonthMoments: function() {
-      var displayedMonthFromMoment = moment(this.displayedFromMoment).startOf(
+      var displayedMonthFromMoment = dayjs(this.displayedFromMoment).startOf(
         'month'
       );
       var displayedMonthToMoment = displayedMonthFromMoment.clone();
@@ -227,7 +234,7 @@ export default {
             yAxisID: 'co2Axis',
             borderColor: '#007cb0',
             data: samples.map(s => {
-              return { t: moment(1000 * s.timestamp_s), y: s.co2_ppm };
+              return { t: dayjs(1000 * s.timestamp_s), y: s.co2_ppm };
             })
           }
         ]
@@ -261,8 +268,8 @@ export default {
       this.loading += 1;
       try {
         const toMoment = this.samplePool.length
-          ? moment(1000 * this.samplePool[0].timestamp_s)
-          : moment();
+          ? dayjs(1000 * this.samplePool[0].timestamp_s)
+          : dayjs();
         const samples = await this.loadSamples({
           from: this.oldestSampleMoment,
           to: toMoment
@@ -283,8 +290,8 @@ export default {
       try {
         const newestSample = this.samplePool[this.samplePool.length - 1];
         const samples = await this.loadSamples({
-          from: moment(1000 * newestSample.timestamp_s),
-          to: moment()
+          from: dayjs(1000 * newestSample.timestamp_s),
+          to: dayjs()
         });
         for (const sample of samples) {
           this.samplePool.push(sample);
@@ -302,7 +309,7 @@ export default {
         this.site = this.getSiteById({ id: this.siteId }).attributes;
         let parent = { type: 'sites', id: this.siteId };
         await this.loadRoomsRelated({ parent });
-        const firstRoom = this.getRoomsRelated({ parent })[0];
+        const firstRoom = this.getRoomsRelated({ parent })[1]; // TODO: not first room but ...
         parent = { type: 'rooms', id: firstRoom.id };
         await this.loadInstallationsRelated({ parent });
         const firstInstallation = this.getInstallationsRelated({ parent })[0];

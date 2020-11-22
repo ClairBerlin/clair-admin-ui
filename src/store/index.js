@@ -19,9 +19,12 @@ export default (function() {
   const Store = new Vuex.Store({
     modules: {
       user,
-      // TODO: do we need this?
       Address: resourceModule({
         name: 'addresses',
+        httpClient: httpClient
+      }),
+      Organization: resourceModule({
+        name: 'organizations',
         httpClient: httpClient
       }),
       ...mapResourceModules({
