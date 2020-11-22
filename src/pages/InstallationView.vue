@@ -256,7 +256,7 @@ export default {
           .then(() => {
             const samples = this.getInstallationById({
               id: this.installationId
-            }).attributes.timeseries;
+            }).attributes.timeseries.slice();
             resolve(samples);
           })
           .catch(error => reject(error));
