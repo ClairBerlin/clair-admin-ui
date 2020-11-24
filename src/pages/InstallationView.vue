@@ -2,19 +2,20 @@
   <q-page class="flex flex-center">
     <q-card class="row">
       <q-card-section>
+        <!-- TODO: let the links point to the respective site/room/installation-->
+        <!-- TODO: use the names of site/room/installation -->
+        <q-toolbar class="bg-primary text-white shadow-2">
+          <q-btn flat label="site" /> / <q-btn flat label="room" /> /
+          <q-btn flat label="installation" />
+        </q-toolbar>
+
         <q-tabs v-model="selectedTab" class="text-primary">
           <q-tab name="day" icon="fa fa-calendar-day" label="Tag" />
           <q-tab name="week" icon="fa fa-calendar-week" label="Woche" />
           <q-tab name="month" icon="fa fa-calendar-alt" label="Monat" />
         </q-tabs>
 
-        <q-tab-panels
-          v-model="selectedTab"
-          animated
-          swipeable
-          transition-prev="jump-up"
-          transition-next="jump-up"
-        >
+        <q-tab-panels v-model="selectedTab" swipeable>
           <q-tab-panel name="day">
             <SampleGraph
               :datacollection="daycollection"
@@ -45,49 +46,33 @@
             />
           </q-tab-panel>
         </q-tab-panels>
-      </q-card-section>
-    </q-card>
-    <q-card class="row">
-      <!-- TODO: show error if it happens -->
-      <!-- <div class="overlay" :v-show="loading > 0 || errorOccurred"> -->
-      <!-- <q-card-section>
-        <div>
-          <div class="fit row justify-start">
-            <div>
-              <q-btn @click="displayedFromMoment = previousFromMoment">
-                <q-icon name="arrow_left" />
-              </q-btn>
-            </div>
-            <div class="fit row justify-center">
-              {{ displayTimePeriod(displayedFromMoment) }}
-            </div>
-            <div class="fit row justify-end">
-              <q-btn
-                @click="displayedFromMoment = nextFromMoment"
-                :disabled="displayedFromMomentIsCurrent"
-              >
-                <q-icon name="arrow_right" />
-              </q-btn>
-            </div>
-          </div>
+        <div class="row justify-between">
+          <q-btn @click="displayedFromMoment = previousFromMoment">
+            <q-icon name="arrow_left" />
+          </q-btn>
+          <div class="">{{ displayTimePeriod(displayedFromMoment) }}</div>
+          <q-btn
+            @click="displayedFromMoment = nextFromMoment"
+            :disabled="displayedFromMomentIsCurrent"
+          >
+            <q-icon name="arrow_right" />
+          </q-btn>
         </div>
-      </q-card-section> -->
+      </q-card-section>
+
+      <!-- TODO: indicate when `errorOccurred` -->
+      <q-inner-loading :showing="loading > 0">
+        <q-spinner-pie size="75px" color="primary" />
+      </q-inner-loading>
     </q-card>
   </q-page>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import '../utils/DayjsAdapter'; // override Chart.js to use day.js for time
+import dayjs from '../utils/time.js';
+import '../utils/DayjsAdapter'; // importing overrides Chart.js' time handling to use day.js
 import SampleGraph from '../components/SampleGraph.vue';
-import dayjs from 'dayjs';
-import minMax from 'dayjs/plugin/minMax';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import 'dayjs/locale/de';
-
-dayjs.extend(minMax);
-dayjs.extend(relativeTime);
-dayjs.locale('de');
 
 export default {
   components: {
@@ -95,16 +80,16 @@ export default {
   },
   data() {
     return {
-      errorOccurred: false,
+      errorOccurred: true,
       site: {},
       installationId: -1,
-      activeTabIndex: 0,
       loading: 0,
       displayedFromMoment: dayjs().startOf('day'),
       oldestSampleMoment: dayjs()
         .subtract(4, 'w')
         .startOf('month'),
       samplePool: [],
+      // TODO: use relative size!
       sampleGraphWidth: '500px',
       sampleGraphHeight: '300px',
       refreshTimerId: -1,
@@ -126,7 +111,7 @@ export default {
         this.displayedFromMoment.clone().subtract(1, 'd'),
         this.displayedFromMoment.clone().subtract(1, 'w'),
         this.displayedFromMoment.clone().subtract(1, 'M')
-      ][this.activeTabIndex];
+      ][this.getTabIndex()];
     },
     currentFromMoment: function() {
       return dayjs().startOf('day');
@@ -142,14 +127,14 @@ export default {
           this.currentFromMoment,
           this.displayedFromMoment.clone().add(1, 'M')
         )
-      ][this.activeTabIndex];
+      ][this.getTabIndex()];
     },
     displayedFromMomentIsCurrent: function() {
       const displayedMoments = [
         this.displayedDayMoments,
         this.displayedWeekMoments,
         this.displayedMonthMoments
-      ][this.activeTabIndex];
+      ][this.getTabIndex()];
       const currentValue = this.currentFromMoment.valueOf();
       return currentValue < displayedMoments.to.valueOf();
     },
@@ -164,9 +149,7 @@ export default {
       };
     },
     daycollection: function() {
-      const day = this.samplesToCollection(this.displayedDayMoments);
-      console.log('dataset.data: ', JSON.stringify(day.datasets[0].data));
-      return day;
+      return this.samplesToCollection(this.displayedDayMoments);
     },
     displayedDayTicks: function() {
       return this.momentsToTicks(this.displayedDayMoments);
@@ -215,6 +198,10 @@ export default {
       loadInstallationsRelated: 'installations/loadRelated',
       loadInstallationById: 'installations/loadById'
     }),
+    getTabIndex() {
+      const tab = this.selectedTab;
+      return tab === 'day' ? 0 : tab === 'week' ? 1 : 2;
+    },
     momentsToTicks: function(moments) {
       return {
         min: moments.from,
@@ -224,21 +211,17 @@ export default {
     displayTimePeriod: function(fromMoment) {
       const displayedTimePeriods = [
         fromMoment.format('dddd, D.M.YYYY'),
-        `Kalenderwoche ${fromMoment.format('w YYYY')}`,
+        `Kalenderwoche ${fromMoment.week()} ${fromMoment.year()}`,
         fromMoment.format('MMMM YYYY')
       ];
-      return displayedTimePeriods[this.activeTabIndex];
+      return displayedTimePeriods[this.getTabIndex()];
     },
     samplesToCollection: function(moments) {
-      console.log(
-        `collecting samples from ${moments.from.unix()} to ${moments.to.unix()}`
-      );
       const samples = this.samplePool.filter(
         s =>
           s.timestamp_s >= moments.from.unix() &&
           s.timestamp_s < moments.to.unix()
       );
-      console.log('filtered: ', JSON.stringify(samples));
       return {
         datasets: [
           {
@@ -258,7 +241,7 @@ export default {
     },
     loadSamples: function(moments) {
       console.log(
-        `loading samples from ${moments.from.fromNow()} to ${moments.to.fromNow()}`
+        `loading samples from ${moments.from.unix()} to ${moments.to.unix()}`
       );
       const promise = new Promise((resolve, reject) => {
         this.loadInstallationById({
@@ -273,7 +256,6 @@ export default {
             const samples = this.getInstallationById({
               id: this.installationId
             }).attributes.timeseries.slice();
-            console.log('API:, ', samples);
             resolve(samples);
           })
           .catch(error => reject(error));
