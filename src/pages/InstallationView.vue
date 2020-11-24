@@ -1,18 +1,21 @@
 <template>
   <q-page class="flex flex-center">
     <q-card class="row">
-      <SampleGraph
-        :datacollection="daycollection"
-        :width="sampleGraphWidth"
-        :height="sampleGraphHeight"
-        timeUnit="hour"
-        :xTicks="displayedDayTicks"
-      />
-      <!-- TODO: show error if it happens -->
-      <!-- <div class="overlay" :v-show="loading > 0 || errorOccurred"> -->
-      <!-- <q-card-section>
-        <q-tabs v-model="activeTabIndex">
-          <q-tab name="Tag">
+      <q-card-section>
+        <q-tabs v-model="selectedTab" class="text-primary">
+          <q-tab name="day" icon="fa fa-calendar-day" label="Tag" />
+          <q-tab name="week" icon="fa fa-calendar-week" label="Woche" />
+          <q-tab name="month" icon="fa fa-calendar-alt" label="Monat" />
+        </q-tabs>
+
+        <q-tab-panels
+          v-model="selectedTab"
+          animated
+          swipeable
+          transition-prev="jump-up"
+          transition-next="jump-up"
+        >
+          <q-tab-panel name="day">
             <SampleGraph
               :datacollection="daycollection"
               :width="sampleGraphWidth"
@@ -20,8 +23,9 @@
               timeUnit="hour"
               :xTicks="displayedDayTicks"
             />
-          </q-tab>
-          <q-tab name="Woche">
+          </q-tab-panel>
+
+          <q-tab-panel name="week">
             <SampleGraph
               :datacollection="weekcollection"
               :width="sampleGraphWidth"
@@ -29,8 +33,9 @@
               timeUnit="day"
               :xTicks="displayedWeekTicks"
             />
-          </q-tab>
-          <q-tab name="Monat">
+          </q-tab-panel>
+
+          <q-tab-panel name="month">
             <SampleGraph
               :datacollection="monthcollection"
               :width="sampleGraphWidth"
@@ -38,9 +43,13 @@
               timeUnit="day"
               :xTicks="displayedMonthTicks"
             />
-          </q-tab>
-        </q-tabs>
-      </q-card-section> -->
+          </q-tab-panel>
+        </q-tab-panels>
+      </q-card-section>
+    </q-card>
+    <q-card class="row">
+      <!-- TODO: show error if it happens -->
+      <!-- <div class="overlay" :v-show="loading > 0 || errorOccurred"> -->
       <!-- <q-card-section>
         <div>
           <div class="fit row justify-start">
@@ -69,8 +78,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import '../utils/DayjsAdapter'; // override Chart.js to use day.js for time
 import SampleGraph from '../components/SampleGraph.vue';
-// import * as dayjs from 'dayjs';
 import dayjs from 'dayjs';
 import minMax from 'dayjs/plugin/minMax';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -96,9 +105,10 @@ export default {
         .subtract(4, 'w')
         .startOf('month'),
       samplePool: [],
-      sampleGraphWidth: '400px',
-      sampleGraphHeight: '400px',
-      refreshTimerId: -1
+      sampleGraphWidth: '500px',
+      sampleGraphHeight: '300px',
+      refreshTimerId: -1,
+      selectedTab: 'day'
     };
   },
   computed: {
@@ -145,27 +155,28 @@ export default {
     },
 
     displayedDayMoments: function() {
-      const displayedFromMoment = dayjs(this.displayedFromMoment);
-      var displayedDayToMoment = dayjs(this.displayedFromMoment);
-      displayedDayToMoment.add(1, 'd');
+      // if this is not a different reference then displayFromMoment the site updates like crazy...
+      const displayedFromMoment = this.displayedFromMoment.clone();
+      const displayedDayToMoment = displayedFromMoment.add(1, 'd');
       return {
         from: displayedFromMoment,
         to: displayedDayToMoment
       };
     },
     daycollection: function() {
-      return this.samplesToCollection(this.displayedDayMoments);
+      const day = this.samplesToCollection(this.displayedDayMoments);
+      console.log('dataset.data: ', JSON.stringify(day.datasets[0].data));
+      return day;
     },
     displayedDayTicks: function() {
       return this.momentsToTicks(this.displayedDayMoments);
     },
 
     displayedWeekMoments: function() {
-      var displayedWeekFromMoment = dayjs(this.displayedFromMoment).startOf(
+      const displayedWeekFromMoment = dayjs(this.displayedFromMoment).startOf(
         'isoWeek'
       );
-      var displayedWeekToMoment = displayedWeekFromMoment.clone();
-      displayedWeekToMoment.add(1, 'w');
+      const displayedWeekToMoment = displayedWeekFromMoment.clone().add(1, 'w');
       return {
         from: displayedWeekFromMoment,
         to: displayedWeekToMoment
@@ -179,11 +190,12 @@ export default {
     },
 
     displayedMonthMoments: function() {
-      var displayedMonthFromMoment = dayjs(this.displayedFromMoment).startOf(
+      const displayedMonthFromMoment = dayjs(this.displayedFromMoment).startOf(
         'month'
       );
-      var displayedMonthToMoment = displayedMonthFromMoment.clone();
-      displayedMonthToMoment.add(1, 'M');
+      const displayedMonthToMoment = displayedMonthFromMoment
+        .clone()
+        .add(1, 'M');
       return {
         from: displayedMonthFromMoment,
         to: displayedMonthToMoment
@@ -218,11 +230,15 @@ export default {
       return displayedTimePeriods[this.activeTabIndex];
     },
     samplesToCollection: function(moments) {
+      console.log(
+        `collecting samples from ${moments.from.unix()} to ${moments.to.unix()}`
+      );
       const samples = this.samplePool.filter(
         s =>
           s.timestamp_s >= moments.from.unix() &&
           s.timestamp_s < moments.to.unix()
       );
+      console.log('filtered: ', JSON.stringify(samples));
       return {
         datasets: [
           {
@@ -257,6 +273,7 @@ export default {
             const samples = this.getInstallationById({
               id: this.installationId
             }).attributes.timeseries.slice();
+            console.log('API:, ', samples);
             resolve(samples);
           })
           .catch(error => reject(error));
