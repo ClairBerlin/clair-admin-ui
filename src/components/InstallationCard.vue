@@ -1,71 +1,69 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="row">
-      <q-card-section>
-        <!-- TODO: let the links point to the respective site/room/installation-->
-        <!-- TODO: use the names of site/room/installation -->
-        <q-toolbar class="bg-primary text-white shadow-2">
-          <q-btn flat label="site" /> / <q-btn flat label="room" /> /
-          <q-btn flat label="installation" />
-        </q-toolbar>
+  <q-card class="row">
+    <q-card-section>
+      <!-- TODO: let the links point to the respective site/room/installation-->
+      <!-- TODO: use the names of site/room/installation -->
+      <q-toolbar class="bg-primary text-white shadow-2">
+        <q-btn flat :label="siteName" /> / <q-btn flat :label="roomName" /> /
+        <q-btn flat :label="installationName" />
+      </q-toolbar>
 
-        <q-tabs v-model="selectedTab" class="text-primary">
-          <q-tab name="day" icon="fa fa-calendar-day" label="Tag" />
-          <q-tab name="week" icon="fa fa-calendar-week" label="Woche" />
-          <q-tab name="month" icon="fa fa-calendar-alt" label="Monat" />
-        </q-tabs>
+      <q-tabs v-model="selectedTab" class="text-primary">
+        <q-tab name="day" icon="fa fa-calendar-day" label="Tag" />
+        <q-tab name="week" icon="fa fa-calendar-week" label="Woche" />
+        <q-tab name="month" icon="fa fa-calendar-alt" label="Monat" />
+      </q-tabs>
 
-        <q-tab-panels v-model="selectedTab" swipeable>
-          <q-tab-panel name="day">
-            <SampleGraph
-              :datacollection="daycollection"
-              :width="sampleGraphWidth"
-              :height="sampleGraphHeight"
-              timeUnit="hour"
-              :xTicks="displayedDayTicks"
-            />
-          </q-tab-panel>
+      <q-tab-panels v-model="selectedTab" swipeable>
+        <q-tab-panel name="day">
+          <SampleGraph
+            :datacollection="daycollection"
+            :width="sampleGraphWidth"
+            :height="sampleGraphHeight"
+            timeUnit="hour"
+            :xTicks="displayedDayTicks"
+          />
+        </q-tab-panel>
 
-          <q-tab-panel name="week">
-            <SampleGraph
-              :datacollection="weekcollection"
-              :width="sampleGraphWidth"
-              :height="sampleGraphHeight"
-              timeUnit="day"
-              :xTicks="displayedWeekTicks"
-            />
-          </q-tab-panel>
+        <q-tab-panel name="week">
+          <SampleGraph
+            :datacollection="weekcollection"
+            :width="sampleGraphWidth"
+            :height="sampleGraphHeight"
+            timeUnit="day"
+            :xTicks="displayedWeekTicks"
+          />
+        </q-tab-panel>
 
-          <q-tab-panel name="month">
-            <SampleGraph
-              :datacollection="monthcollection"
-              :width="sampleGraphWidth"
-              :height="sampleGraphHeight"
-              timeUnit="day"
-              :xTicks="displayedMonthTicks"
-            />
-          </q-tab-panel>
-        </q-tab-panels>
-        <div class="row justify-between">
-          <q-btn @click="displayedFromMoment = previousFromMoment">
-            <q-icon name="arrow_left" />
-          </q-btn>
-          <div class="">{{ displayTimePeriod(displayedFromMoment) }}</div>
-          <q-btn
-            @click="displayedFromMoment = nextFromMoment"
-            :disabled="displayedFromMomentIsCurrent"
-          >
-            <q-icon name="arrow_right" />
-          </q-btn>
-        </div>
-      </q-card-section>
+        <q-tab-panel name="month">
+          <SampleGraph
+            :datacollection="monthcollection"
+            :width="sampleGraphWidth"
+            :height="sampleGraphHeight"
+            timeUnit="day"
+            :xTicks="displayedMonthTicks"
+          />
+        </q-tab-panel>
+      </q-tab-panels>
+      <div class="row justify-between">
+        <q-btn @click="displayedFromMoment = previousFromMoment">
+          <q-icon name="arrow_left" />
+        </q-btn>
+        <div class="">{{ displayTimePeriod(displayedFromMoment) }}</div>
+        <q-btn
+          @click="displayedFromMoment = nextFromMoment"
+          :disabled="displayedFromMomentIsCurrent"
+        >
+          <q-icon name="arrow_right" />
+        </q-btn>
+      </div>
+    </q-card-section>
 
-      <!-- TODO: indicate when `errorOccurred` -->
-      <q-inner-loading :showing="loading > 0">
-        <q-spinner-pie size="75px" color="primary" />
-      </q-inner-loading>
-    </q-card>
-  </q-page>
+    <!-- TODO: indicate when `errorOccurred` -->
+    <q-inner-loading :showing="loading > 0">
+      <q-spinner-pie size="75px" color="primary" />
+    </q-inner-loading>
+  </q-card>
 </template>
 
 <script>
@@ -78,11 +76,16 @@ export default {
   components: {
     SampleGraph
   },
+  props: {
+    siteName: String,
+    roomName: String,
+    installationName: String,
+    installationId: Number
+  },
   data() {
     return {
       errorOccurred: true,
       site: {},
-      installationId: -1,
       loading: 0,
       displayedFromMoment: dayjs().startOf('day'),
       oldestSampleMoment: dayjs()
@@ -304,15 +307,15 @@ export default {
     loadSite: async function() {
       this.loading += 1;
       try {
-        await this.loadSiteById({ id: this.siteId });
-        this.site = this.getSiteById({ id: this.siteId }).attributes;
-        let parent = { type: 'sites', id: this.siteId };
-        await this.loadRoomsRelated({ parent });
-        const firstRoom = this.getRoomsRelated({ parent })[1]; // TODO: not first room but ...
-        parent = { type: 'rooms', id: firstRoom.id };
-        await this.loadInstallationsRelated({ parent });
-        const firstInstallation = this.getInstallationsRelated({ parent })[0];
-        this.installationId = firstInstallation.id;
+        // await this.loadSiteById({ id: this.siteId });
+        // this.site = this.getSiteById({ id: this.siteId }).attributes;
+        // let parent = { type: 'sites', id: this.siteId };
+        // await this.loadRoomsRelated({ parent });
+        // const firstRoom = this.getRoomsRelated({ parent })[1]; // TODO: not first room but ...
+        // parent = { type: 'rooms', id: firstRoom.id };
+        // await this.loadInstallationsRelated({ parent });
+        // const firstInstallation = this.getInstallationsRelated({ parent })[0];
+        // this.installationId = firstInstallation.id;
         await this.loadPastSamples();
       } catch (error) {
         console.log('an error occured while loading the site data:');
@@ -331,12 +334,12 @@ export default {
     clearInterval(this.refreshTimerId);
   },
   watch: {
-    siteId: function(newVal) {
-      this.loadSite();
-      // empty sample pool
-      this.samplePool.splice(0);
-      // should we reset the displayed time period?
-    },
+    // siteId: function(newVal) {
+    //   this.loadSite();
+    //   // empty sample pool
+    //   this.samplePool.splice(0);
+    //   // should we reset the displayed time period?
+    // },
     displayedFromMoment: function(newVal) {
       if (
         this.displayedFromMoment.valueOf() < this.oldestSampleMoment.valueOf()

@@ -13,10 +13,6 @@ const routes = [
         name: 'dashboard',
         component: () => import('pages/Dashboard.vue'),
         meta: { requiresAuth: true }
-      },
-      {
-        path: 'installations/:id',
-        component: () => import('pages/InstallationView.vue')
       }
     ]
   },

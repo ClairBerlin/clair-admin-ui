@@ -1,29 +1,22 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="row shadow-8">
-      <q-card-section>
-        <div>
-          <div style="font-size: 5vh">
-            Dashboard
-          </div>
-
-          <q-btn
-            class="q-mt-xl float-right"
-            color="white"
-            text-color="blue"
-            unelevated
-            to="/installations/1"
-            :label="$t('Go Home')"
-            no-caps
-          />
-        </div>
-      </q-card-section>
-    </q-card>
+  <q-page class="flex flex-center q-pa-md">
+    <div class="row q-col-gutter-x-xs q-col-gutter-y-lg">
+      <div class="" v-for="n in 5" :key="`none-${n}`">
+        <installation-card
+          siteName="site"
+          roomName="room"
+          installationName="installation"
+          installationId="1"
+        />
+      </div>
+    </div>
   </q-page>
 </template>
 
 <script>
+import InstallationCard from '../components/InstallationCard.vue';
 export default {
-  name: 'Dashboard'
+  name: 'Dashboard',
+  components: { InstallationCard }
 };
 </script>
