@@ -69,7 +69,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import dayjs from '../utils/time.js';
-import '../utils/DayjsAdapter'; // importing overrides Chart.js' time handling to use day.js
 import SampleGraph from '../components/SampleGraph.vue';
 
 export default {
@@ -80,7 +79,7 @@ export default {
     siteName: String,
     roomName: String,
     installationName: String,
-    installationId: Number
+    installationId: String
   },
   data() {
     return {
@@ -106,9 +105,6 @@ export default {
       getInstallationsRelated: 'installations/related',
       getInstallationById: 'installations/byId'
     }),
-    siteId: function() {
-      return this.$route.params.id;
-    },
     previousFromMoment: function() {
       return [
         this.displayedFromMoment.clone().subtract(1, 'd'),
@@ -196,7 +192,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      loadSiteById: 'sites/loadById',
+      loadInstallationById: 'sites/loadById',
       loadRoomsRelated: 'rooms/loadRelated',
       loadInstallationsRelated: 'installations/loadRelated',
       loadInstallationById: 'installations/loadById'
@@ -304,18 +300,9 @@ export default {
         this.errorOccurred = true;
       }
     },
-    loadSite: async function() {
+    loadInstallation: async function() {
       this.loading += 1;
       try {
-        // await this.loadSiteById({ id: this.siteId });
-        // this.site = this.getSiteById({ id: this.siteId }).attributes;
-        // let parent = { type: 'sites', id: this.siteId };
-        // await this.loadRoomsRelated({ parent });
-        // const firstRoom = this.getRoomsRelated({ parent })[1]; // TODO: not first room but ...
-        // parent = { type: 'rooms', id: firstRoom.id };
-        // await this.loadInstallationsRelated({ parent });
-        // const firstInstallation = this.getInstallationsRelated({ parent })[0];
-        // this.installationId = firstInstallation.id;
         await this.loadPastSamples();
       } catch (error) {
         console.log('an error occured while loading the site data:');
@@ -326,7 +313,7 @@ export default {
     }
   },
   mounted() {
-    this.loadSite();
+    this.loadInstallation();
     // refresh once every two minutes
     this.refreshTimerId = setInterval(this.loadRecentSamples, 120000);
   },
@@ -334,12 +321,6 @@ export default {
     clearInterval(this.refreshTimerId);
   },
   watch: {
-    // siteId: function(newVal) {
-    //   this.loadSite();
-    //   // empty sample pool
-    //   this.samplePool.splice(0);
-    //   // should we reset the displayed time period?
-    // },
     displayedFromMoment: function(newVal) {
       if (
         this.displayedFromMoment.valueOf() < this.oldestSampleMoment.valueOf()
