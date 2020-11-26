@@ -13,7 +13,6 @@ export default {
   },
   watch: {
     options: function(newVal) {
-      console.log('rerendering');
       this._data._chart.destroy();
       this.renderChart(this.chartData, this.options);
     }

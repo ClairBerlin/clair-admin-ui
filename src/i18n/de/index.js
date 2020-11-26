@@ -30,5 +30,6 @@ export default {
   'Oops. Nothing here...': 'Wie Sie sehen, sehen Sie nichts...',
 
   // Dashboard
-  'Go Home': 'Zur Startseite'
+  'Go Home': 'Zur Startseite',
+  'No installations found': 'Keine Installationen gefunden'
 };

@@ -1,6 +1,12 @@
 <template>
   <q-page class="flex flex-center q-pa-md">
+    <q-card v-if="installations.length == 0">
+      <q-card-section class="text-h4">
+        {{ $t('No installations found') }}
+      </q-card-section>
+    </q-card>
     <installation-card
+      v-else
       v-for="installation in installations"
       :siteName="getSiteName(installation)"
       :roomName="getRoomName(installation)"
@@ -17,7 +23,7 @@ import InstallationCard from '../components/InstallationCard.vue';
 export default {
   name: 'Dashboard',
   props: {
-    orgId: String
+    selectedOrg: Object
   },
   components: { InstallationCard },
   data() {
@@ -28,7 +34,6 @@ export default {
   computed: {
     ...mapGetters({
       getSiteById: 'sites/byId',
-      getOrganizationById: 'sites/byId',
       getRoomsById: 'rooms/byId',
       getRoomsRelated: 'rooms/related',
       getInstallationsRelated: 'installations/related',
@@ -37,11 +42,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      loadInstallationById: 'sites/loadById',
       loadRoomsRelated: 'rooms/loadRelated',
       loadInstallationsRelated: 'installations/loadRelated',
-      loadInstallationById: 'installations/loadById',
-      loadOrganizationById: 'organizations/loadById',
       loadSitesRelated: 'sites/loadRelated'
     }),
     getRoom(installation) {
@@ -61,35 +63,43 @@ export default {
     getNodeName(installation) {
       return installation.relationships.node.data.id;
     },
-    getInstallationsForOrg: async function() {
-      // TODO:load sites for the selected org (-> bind from main layout)
-      const oid = 1;
-      await this.loadOrganizationById({ id: oid });
-      const org = this.getOrganizationById({ id: oid });
+    getInstallationsForOrg: async function(organization) {
+      const oid = organization.id;
       let parent = { type: 'organizations', id: oid };
       await this.loadSitesRelated({ parent });
       const sites = this.getSitesRelated({ parent });
+      if (!sites) return;
       sites.forEach(async site => {
         parent = { type: 'sites', id: site.id };
         await this.loadRoomsRelated({ parent });
         const rooms = this.getRoomsRelated({ parent });
+        if (!rooms) return;
         rooms.forEach(async room => {
           parent = { type: 'rooms', id: room.id };
           await this.loadInstallationsRelated({ parent });
-          const installations = this.getInstallationsRelated({ parent });
-          if (installations) {
-            this.installations.push(...installations);
-          }
+          const newInstalls = this.getInstallationsRelated({ parent });
+          if (!newInstalls) return;
+          // avoid adding any installation twice
+          const existingInstallIds = this.installations.map(i => i.id);
+          newInstalls.forEach(newInstall => {
+            if (!existingInstallIds.includes(newInstall.id)) {
+              this.installations.push(newInstall);
+            }
+          });
         });
       });
     }
   },
   mounted() {
-    this.getInstallationsForOrg();
+    if (this.selectedOrg) {
+      this.getInstallationsForOrg(this.selectedOrg);
+    }
   },
   watch: {
-    installations: function(newVal) {
-      console.log(JSON.stringify(newVal));
+    selectedOrg: async function(newOrg) {
+      // clear installations of any previously selected organization
+      this.installations = [];
+      this.getInstallationsForOrg(newOrg);
     }
   }
 };

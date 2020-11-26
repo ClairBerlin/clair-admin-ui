@@ -2,7 +2,6 @@
   <q-card class="row">
     <q-card-section>
       <!-- TODO: let the links point to the respective site/room/installation-->
-      <!-- TODO: use the names of site/room/installation -->
       <q-toolbar class="bg-primary text-white shadow-2">
         <q-btn flat :label="siteName" /> / <q-btn flat :label="roomName" /> /
         <q-btn flat :label="installationName" />
@@ -59,9 +58,9 @@
       </div>
     </q-card-section>
 
-    <!-- TODO: indicate when `errorOccurred` -->
-    <q-inner-loading :showing="loading > 0">
-      <q-spinner-pie size="75px" color="primary" />
+    <q-inner-loading :showing="loading > 0 || errorOccurred">
+      <q-spinner-radio v-if="errorOccurred" size="75px" color="red" />
+      <q-spinner-pie v-else size="75px" color="primary" />
     </q-inner-loading>
   </q-card>
 </template>
@@ -83,7 +82,7 @@ export default {
   },
   data() {
     return {
-      errorOccurred: true,
+      errorOccurred: false,
       site: {},
       loading: 0,
       displayedFromMoment: dayjs().startOf('day'),
@@ -100,9 +99,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getSiteById: 'sites/byId',
-      getRoomsRelated: 'rooms/related',
-      getInstallationsRelated: 'installations/related',
       getInstallationById: 'installations/byId'
     }),
     previousFromMoment: function() {
@@ -192,9 +188,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      loadInstallationById: 'sites/loadById',
-      loadRoomsRelated: 'rooms/loadRelated',
-      loadInstallationsRelated: 'installations/loadRelated',
       loadInstallationById: 'installations/loadById'
     }),
     getTabIndex() {
