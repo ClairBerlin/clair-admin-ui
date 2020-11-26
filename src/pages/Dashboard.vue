@@ -73,20 +73,22 @@ export default {
         parent = { type: 'sites', id: site.id };
         await this.loadRoomsRelated({ parent });
         const rooms = this.getRoomsRelated({ parent });
-        if (!rooms) return;
-        rooms.forEach(async room => {
-          parent = { type: 'rooms', id: room.id };
-          await this.loadInstallationsRelated({ parent });
-          const newInstalls = this.getInstallationsRelated({ parent });
-          if (!newInstalls) return;
-          // avoid adding any installation twice
-          const existingInstallIds = this.installations.map(i => i.id);
-          newInstalls.forEach(newInstall => {
-            if (!existingInstallIds.includes(newInstall.id)) {
-              this.installations.push(newInstall);
+        if (rooms) {
+          rooms.forEach(async room => {
+            parent = { type: 'rooms', id: room.id };
+            await this.loadInstallationsRelated({ parent });
+            const newInstalls = this.getInstallationsRelated({ parent });
+            if (newInstalls) {
+              // avoid adding any installation twice
+              const existingInstallIds = this.installations.map(i => i.id);
+              newInstalls.forEach(newInstall => {
+                if (!existingInstallIds.includes(newInstall.id)) {
+                  this.installations.push(newInstall);
+                }
+              });
             }
           });
-        });
+        }
       });
     }
   },
