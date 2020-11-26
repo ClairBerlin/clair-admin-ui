@@ -120,7 +120,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view :selectedOrg="selectedOrg" />
     </q-page-container>
   </q-layout>
 </template>
