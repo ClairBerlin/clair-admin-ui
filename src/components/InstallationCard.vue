@@ -7,14 +7,14 @@
         <q-btn flat :label="installationName" />
       </q-toolbar>
 
-      <q-tabs v-model="selectedTab" class="text-primary">
+      <q-tabs v-model="selectedTab" class="text-primary" align="justify">
         <q-tab name="day" icon="fa fa-calendar-day" label="Tag" />
         <q-tab name="week" icon="fa fa-calendar-week" label="Woche" />
         <q-tab name="month" icon="fa fa-calendar-alt" label="Monat" />
       </q-tabs>
 
       <q-tab-panels v-model="selectedTab" swipeable>
-        <q-tab-panel name="day">
+        <q-tab-panel class="q-pa-none" name="day">
           <SampleGraph
             :datacollection="daycollection"
             :width="sampleGraphWidth"
@@ -90,9 +90,8 @@ export default {
         .subtract(4, 'w')
         .startOf('month'),
       samplePool: [],
-      // TODO: use relative size!
-      sampleGraphWidth: '500px',
-      sampleGraphHeight: '300px',
+      sampleGraphWidth: '75vw',
+      sampleGraphHeight: '50vh',
       refreshTimerId: -1,
       selectedTab: 'day'
     };

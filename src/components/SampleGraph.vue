@@ -30,9 +30,10 @@ export default {
       chartsStyles: {
         position: 'relative',
         height: this.height,
-        'max-height': '1000px',
+        'max-height': '500px',
         width: this.width,
-        margin: '20px auto'
+        'max-width': '700px',
+        margin: '10px auto'
       }
     };
   },
