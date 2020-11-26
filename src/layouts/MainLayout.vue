@@ -73,7 +73,8 @@
 
       <q-separator />
       <q-list>
-        <q-expansion-item
+        <!-- TODO: add once the sites the menu items point to exist -->
+        <!-- <q-expansion-item
           key="manage"
           :label="$t('Manage')"
           icon="settings"
@@ -98,24 +99,29 @@
             </q-item>
           </template>
         </q-expansion-item>
-        <q-separator />
-        <template v-for="(item, index) in items">
-          <q-item
-            clickable
-            v-ripple
-            :key="index"
-            :acive="selected === item.link"
-            @click="selected = item.link"
-            :to="item.link"
-          >
-            <q-item-section avatar>
-              <q-icon :name="item.icon" />
-            </q-item-section>
-            <q-item-section>
-              {{ $t(item.label) }}
-            </q-item-section>
-          </q-item>
-        </template>
+        <q-separator /> -->
+        <q-item
+          tag="a"
+          href="mailto:kontakt@clair-berlin.de"
+          clickable
+          v-ripple
+        >
+          <q-item-section avatar>
+            <q-icon name="feedback" />
+          </q-item-section>
+          <q-item-section>
+            {{ $t('Feedback') }}
+          </q-item-section>
+        </q-item>
+
+        <q-item clickable v-ripple @click="openFaq()">
+          <q-item-section avatar>
+            <q-icon name="help" />
+          </q-item-section>
+          <q-item-section>
+            {{ $t('Help') }}
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -128,6 +134,7 @@
 <script>
 import de from 'quasar/lang/de';
 import en from 'quasar/lang/en-us';
+import { openURL } from 'quasar';
 
 import { mapActions, mapGetters } from 'vuex';
 
@@ -181,6 +188,9 @@ export default {
       loadUserById: 'users/loadById',
       loadOrgsRelated: 'organizations/loadRelated'
     }),
+    openFaq() {
+      return openURL('https://clair-berlin.de/faq.html');
+    },
     loadUserOrgs: async function() {
       const uid = await this.$store.dispatch('user/getUserId');
       await this.loadUserById({ id: uid });
