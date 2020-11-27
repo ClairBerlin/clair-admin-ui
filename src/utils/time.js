@@ -1,10 +1,12 @@
 import '../utils/DayjsAdapter'; // importing overrides Chart.js' time handling to use day.js
 import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
 import minMax from 'dayjs/plugin/minMax';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import 'dayjs/locale/de';
 
+dayjs.extend(isoWeek);
 dayjs.extend(minMax);
 dayjs.extend(relativeTime);
 dayjs.extend(weekOfYear);

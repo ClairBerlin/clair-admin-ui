@@ -10,7 +10,7 @@
       v-for="installation in installations"
       :siteName="getSiteName(installation)"
       :roomName="getRoomName(installation)"
-      :installationName="installation.id"
+      :installationName="getNodeName(installation)"
       :installationId="installation.id"
       :key="installation.id"
     />
@@ -61,6 +61,7 @@ export default {
       return room.attributes.name;
     },
     getNodeName(installation) {
+      //TODO: replace with node alias
       return installation.relationships.node.data.id;
     },
     async getSitesForOrg(org) {
