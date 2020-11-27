@@ -63,21 +63,29 @@ export default {
     getNodeName(installation) {
       return installation.relationships.node.data.id;
     },
-    getInstallationsForOrg: async function(organization) {
-      const oid = organization.id;
-      let parent = { type: 'organizations', id: oid };
+    async getSitesForOrg(org) {
+      let parent = { type: 'organizations', id: org.id };
       await this.loadSitesRelated({ parent });
-      const sites = this.getSitesRelated({ parent });
+      return this.getSitesRelated({ parent });
+    },
+    async getRoomsForSite(site) {
+      parent = { type: 'sites', id: site.id };
+      await this.loadRoomsRelated({ parent });
+      return this.getRoomsRelated({ parent });
+    },
+    async getInstallationsForRoom(room) {
+      parent = { type: 'rooms', id: room.id };
+      await this.loadInstallationsRelated({ parent });
+      return this.getInstallationsRelated({ parent });
+    },
+    getInstallationsForOrg: async function(organization) {
+      const sites = await this.getSitesForOrg(organization);
       if (!sites) return;
-      sites.forEach(async site => {
-        parent = { type: 'sites', id: site.id };
-        await this.loadRoomsRelated({ parent });
-        const rooms = this.getRoomsRelated({ parent });
+      for (const site of sites) {
+        const rooms = await this.getRoomsForSite(site);
         if (rooms) {
-          rooms.forEach(async room => {
-            parent = { type: 'rooms', id: room.id };
-            await this.loadInstallationsRelated({ parent });
-            const newInstalls = this.getInstallationsRelated({ parent });
+          for (const room of rooms) {
+            const newInstalls = await this.getInstallationsForRoom(room);
             if (newInstalls) {
               // avoid adding any installation twice
               const existingInstallIds = this.installations.map(i => i.id);
@@ -87,9 +95,9 @@ export default {
                 }
               });
             }
-          });
+          }
         }
-      });
+      }
     }
   },
   mounted() {
