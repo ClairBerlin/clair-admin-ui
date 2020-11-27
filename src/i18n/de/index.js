@@ -7,7 +7,7 @@ export default {
   Username: 'Nutzername',
   Password: 'Passwort',
   Submit: 'Einloggen',
-  'Please enter your username': 'Bitte geben Sie Ihren Nuternamen ein',
+  'Please enter your username': 'Bitte geben Sie Ihren Nutzernamen ein',
   'Please enter your password': 'Bitte geben Sie Ihr Passwort ein',
   'Login failed': 'Anmeldung ist fehlgeschlagen',
 
