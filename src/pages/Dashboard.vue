@@ -37,14 +37,16 @@ export default {
       getRoomsById: 'rooms/byId',
       getRoomsRelated: 'rooms/related',
       getInstallationsRelated: 'installations/related',
-      getSitesRelated: 'sites/related'
+      getSitesRelated: 'sites/related',
+      getNodeById: 'nodes/byId'
     })
   },
   methods: {
     ...mapActions({
       loadRoomsRelated: 'rooms/loadRelated',
       loadInstallationsRelated: 'installations/loadRelated',
-      loadSitesRelated: 'sites/loadRelated'
+      loadSitesRelated: 'sites/loadRelated',
+      loadNodeById: 'nodes/loadById'
     }),
     getRoom(installation) {
       const roomId = installation.relationships.room.data.id;
@@ -61,8 +63,9 @@ export default {
       return room.attributes.name;
     },
     getNodeName(installation) {
-      //TODO: replace with node alias
-      return installation.relationships.node.data.id;
+      const nodeId = installation.relationships.node.data.id;
+      const node = this.getNodeById({ id: nodeId });
+      return node.attributes.alias;
     },
     async getSitesForOrg(org) {
       let parent = { type: 'organizations', id: org.id };
@@ -79,6 +82,11 @@ export default {
       await this.loadInstallationsRelated({ parent });
       return this.getInstallationsRelated({ parent });
     },
+    async getNodeForInstallation(installation) {
+      const nodeId = installation.relationships.node.data.id;
+      await this.loadNodeById({ id: nodeId });
+      return this.getNodeById({ id: nodeId });
+    },
     getInstallationsForOrg: async function(organization) {
       const sites = await this.getSitesForOrg(organization);
       if (!sites) return;
@@ -90,11 +98,14 @@ export default {
             if (newInstalls) {
               // avoid adding any installation twice
               const existingInstallIds = this.installations.map(i => i.id);
-              newInstalls.forEach(newInstall => {
+              for (const newInstall of newInstalls) {
                 if (!existingInstallIds.includes(newInstall.id)) {
-                  this.installations.push(newInstall);
+                  const node = await this.getNodeForInstallation(newInstall);
+                  if (node) {
+                    this.installations.push(newInstall);
+                  }
                 }
-              });
+              }
             }
           }
         }
