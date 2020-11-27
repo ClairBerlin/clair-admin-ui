@@ -24,7 +24,7 @@
           />
         </q-tab-panel>
 
-        <q-tab-panel name="week">
+        <q-tab-panel class="q-pa-none" name="week">
           <SampleGraph
             :datacollection="weekcollection"
             :width="sampleGraphWidth"
@@ -34,7 +34,7 @@
           />
         </q-tab-panel>
 
-        <q-tab-panel name="month">
+        <q-tab-panel class="q-pa-none" name="month">
           <SampleGraph
             :datacollection="monthcollection"
             :width="sampleGraphWidth"

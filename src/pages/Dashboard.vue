@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center q-pa-md">
+  <q-page class="q-pa-md row items-start q-gutter-md">
     <q-card v-if="installations.length == 0">
       <q-card-section class="text-h4">
         {{ $t('No installations found') }}
