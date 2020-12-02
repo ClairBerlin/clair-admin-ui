@@ -65,13 +65,11 @@ export default {
                 labelString: 'CO2 [ppm]'
               },
               ticks: {
-                min: 0,
+                min: 400,
                 max: 1800
               },
               gridLines: {
                 color: [
-                  '#27ff00',
-                  '#27ff00',
                   '#27ff00',
                   '#95fe00',
                   '#d0fc00',
@@ -79,7 +77,6 @@ export default {
                   '#ffd400',
                   '#ffaf00',
                   '#ff8700',
-                  '#ff0000',
                   '#ff0000'
                 ].reverse()
               }
