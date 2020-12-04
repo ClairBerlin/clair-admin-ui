@@ -44,7 +44,7 @@ const actions = {
 };
 
 function setAuthHeader(token) {
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+  axios.defaults.headers.common['Authorization'] = 'Token ' + token;
 }
 
 function removeAuthHeader() {

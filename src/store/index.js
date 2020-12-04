@@ -15,6 +15,21 @@ const httpClient = axios.create({
   }
 });
 
+// setting the auth header globally does not affect this instance
+// therefore we intercept requests and add the token from localStorage
+httpClient.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = 'Token ' + token;
+    }
+    return config;
+  },
+  error => {
+    Promise.reject(error);
+  }
+);
+
 export default (function() {
   const Store = new Vuex.Store({
     modules: {
