@@ -14,18 +14,18 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.9.11",
     "@reststate/vuex": "^0.2.3",
     "axios": "^0.21.0",
     "chart.js": "^2.9.4",
     "core-js": "^3.7.0",
     "dayjs": "^1.9.6",
-    "quasar": "^1.14.5",
+    "quasar": "^1.14.7",
     "vue-chartjs": "^3.5.1",
     "vue-i18n": "^8.22.1"
   },
   "devDependencies": {
-    "@quasar/app": "^2.1.8",
+    "@quasar/app": "^2.1.11",
     "@vue/devtools": "^5.3.3",
     "babel-eslint": "^10.0.1",
     "eslint": "^7.13.0",
