@@ -25,6 +25,9 @@ export default {
   Settings: 'Einstellungen',
   Feedback: 'Feedback',
   Help: 'Hilfe',
+  'My Account': 'Mein Konto',
+  'Manage Email': 'E-Mail verwalten',
+  'Change Password': 'Passwort ändern',
 
   // 404
   'Oops. Nothing here...': 'Wie Sie sehen, sehen Sie nichts...',

@@ -73,6 +73,27 @@
 
       <q-separator />
       <q-list>
+        <q-expansion-item
+          key="account"
+          :label="$t('My Account')"
+          icon="fa fa-user"
+          default-closed
+        >
+          <template v-for="item in accountItems">
+            <q-item
+              :key="item.name"
+              :inset-level="0.5"
+              clickable
+              v-ripple
+              @click="openAccountSettings(item.path)"
+            >
+              <q-item-section>
+                {{ $t(item.name) }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-expansion-item>
+        <q-separator />
         <!-- TODO: add once the sites the menu items point to exist -->
         <!-- <q-expansion-item
           key="manage"
@@ -146,6 +167,11 @@ class MenuItem {
   }
 }
 
+const accountItems = [
+  { name: 'Manage Email', path: '/accounts/email' },
+  { name: 'Change Password', path: '/accounts/password/change' }
+];
+
 const manageItems = [
   new MenuItem('fa fa-sitemap', 'Organizations', 'organizations'),
   new MenuItem('fa fa-map-marker', 'Locations', 'locations'),
@@ -172,6 +198,7 @@ export default {
       ],
       selected: '-',
       items: items,
+      accountItems: accountItems,
       manageItems: manageItems,
       orgs: orgs,
       selectedOrg: selectedOrg
@@ -190,6 +217,9 @@ export default {
     }),
     openFaq() {
       return openURL('https://clair-berlin.de/faq.html');
+    },
+    openAccountSettings(path) {
+      return openURL(window.location.host + path);
     },
     loadUserOrgs: async function() {
       const uid = await this.$store.dispatch('user/getUserId');
