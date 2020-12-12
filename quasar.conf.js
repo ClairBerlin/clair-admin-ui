@@ -76,7 +76,8 @@ module.exports = function() {
       port: 8080,
       open: true, // opens browser window automatically
       proxy: {
-        '/api': 'http://localhost:8888'
+        '/api': 'http://localhost:8888',
+        '/accounts': 'http://localhost:8888'
       }
     },
 
