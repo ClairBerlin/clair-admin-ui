@@ -1,33 +1,8 @@
 import axios from 'axios';
 
 const actions = {
-  login(context, { username, password }) {
-    const params = new URLSearchParams();
-    params.append('username', username);
-    params.append('password', password);
-    return new Promise((resolve, reject) => {
-      axios
-        .post('/api/v1/auth/login/', params)
-        .then(response => {
-          const token = response.data.data.id;
-          context.commit('SET_TOKEN', token);
-          setAuthHeader(token);
-          resolve();
-        })
-        .catch(error => reject(error));
-    });
-  },
-  logout(context) {
-    return new Promise((resolve, reject) => {
-      axios
-        .post('/api/v1/auth/logout/')
-        .then(() => {
-          context.commit('REMOVE_TOKEN');
-          removeAuthHeader();
-          resolve();
-        })
-        .catch(error => reject(error));
-    });
+  logout() {
+    return axios.post('/api/v1/auth/logout/');
   },
   getUserId(context) {
     return new Promise((resolve, reject) => {
@@ -42,13 +17,5 @@ const actions = {
     });
   }
 };
-
-function setAuthHeader(token) {
-  axios.defaults.headers.common['Authorization'] = 'Token ' + token;
-}
-
-function removeAuthHeader() {
-  delete axios.defaults.headers.common['Authorization'];
-}
 
 export default actions;

@@ -17,13 +17,5 @@ export default (function() {
     base: process.env.VUE_ROUTER_BASE
   });
 
-  Router.beforeEach((to, from, next) => {
-    if (!to.meta?.requiresAuth || store().getters['user/isLoggedIn']) {
-      return next();
-    } else {
-      return next({ name: 'login' });
-    }
-  });
-
   return Router;
 });
