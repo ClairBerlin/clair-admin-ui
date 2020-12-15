@@ -4,15 +4,9 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: 'login',
-        name: 'login',
-        component: () => import('pages/Login.vue')
-      },
-      {
         path: '',
         name: 'dashboard',
-        component: () => import('pages/Dashboard.vue'),
-        meta: { requiresAuth: true }
+        component: () => import('pages/Dashboard.vue')
       }
     ]
   },

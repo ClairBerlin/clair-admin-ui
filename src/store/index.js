@@ -15,19 +15,25 @@ const httpClient = axios.create({
   }
 });
 
-// setting the auth header globally does not affect this instance
-// therefore we intercept requests and add the token from localStorage
-httpClient.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = 'Token ' + token;
-    }
-    return config;
-  },
-  error => {
-    Promise.reject(error);
+function redirectOn401(error) {
+  console.log(error);
+  if (error.response.status === 401) {
+    window.location.href = window.location.origin + '/accounts/login/';
   }
+  Promise.reject(error);
+}
+
+httpClient.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => redirectOn401(error)
+);
+axios.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => redirectOn401(error)
 );
 
 export default (function() {

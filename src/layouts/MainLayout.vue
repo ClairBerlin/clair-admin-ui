@@ -44,7 +44,6 @@
     </q-header>
 
     <q-drawer
-      v-if="isLoggedIn()"
       @hook:mounted="loadUserOrgs()"
       v-model="leftDrawerOpen"
       show-if-above
@@ -252,7 +251,8 @@ export default {
         .dispatch('user/logout')
         .then(() => {
           this.$q.cookies.remove('csrftoken');
-          return this.$router.push({ name: 'login' });
+          window.location.href = window.location.origin + '/accounts/login/';
+          return;
         })
         .catch(error => {
           console.log(error);
