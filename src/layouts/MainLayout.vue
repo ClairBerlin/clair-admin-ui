@@ -218,7 +218,7 @@ export default {
       return openURL('https://clair-berlin.de/faq.html');
     },
     openAccountSettings(path) {
-      return openURL(window.location.host + path);
+      return openURL(window.location.origin + path);
     },
     loadUserOrgs: async function() {
       const uid = await this.$store.dispatch('user/getUserId');
