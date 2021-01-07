@@ -16,7 +16,7 @@
   "dependencies": {
     "@quasar/extras": "^1.9.11",
     "@reststate/vuex": "^0.2.3",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "chart.js": "^2.9.4",
     "core-js": "^3.7.0",
     "dayjs": "^1.9.6",
@@ -29,7 +29,7 @@
     "@vue/devtools": "^5.3.3",
     "babel-eslint": "^10.0.1",
     "eslint": "^7.13.0",
-    "eslint-config-prettier": "^6.9.0",
+    "eslint-config-prettier": "^7.1.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-vue": "^7.1.0"
   },
