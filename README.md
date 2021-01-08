@@ -15,6 +15,12 @@ yarn
 (cd node_modules && patch -p0 < ../@reststate.patch)
 ```
 
+To add the quasar CLI run:
+
+```bash
+yarn global add @quasar/cli
+```
+
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
