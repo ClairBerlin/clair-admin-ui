@@ -9,9 +9,9 @@ const routes = [
         component: () => import('pages/Dashboard.vue')
       },
       {
-        path: 'installations',
-        name: 'installations',
-        component: () => import('pages/Installations.vue')
+        path: 'organization',
+        name: 'organization',
+        component: () => import('pages/Organization.vue')
       }
     ]
   },
