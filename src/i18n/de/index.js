@@ -34,5 +34,15 @@ export default {
 
   // Dashboard
   'Go Home': 'Zur Startseite',
-  'No installations found': 'Keine Installationen gefunden'
+  'No installations found': 'Keine Installationen gefunden',
+
+  // Instalations
+  'Uninstalled Sensors': 'Nicht installierte Sensoren',
+  'Add new location': 'Neuen Ort hinzufügen',
+  'Add new room': 'Neuen Raum hinzufügen',
+
+  // Sensor List
+  'Click to edit sensor details': 'Sensorendetails bearbeiten',
+  'Click to add a new sensor': 'Sensor hinzufügen',
+  'Add new sensor': 'Neuen Sensor hinzufügen'
 };

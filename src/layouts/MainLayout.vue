@@ -93,8 +93,7 @@
           </template>
         </q-expansion-item>
         <q-separator />
-        <!-- TODO: add once the sites the menu items point to exist -->
-        <!-- <q-expansion-item
+        <q-expansion-item
           key="manage"
           :label="$t('Manage')"
           icon="settings"
@@ -119,7 +118,7 @@
             </q-item>
           </template>
         </q-expansion-item>
-        <q-separator /> -->
+        <q-separator />
         <q-item
           tag="a"
           href="mailto:kontakt@clair-berlin.de"
@@ -172,10 +171,7 @@ const accountItems = [
 ];
 
 const manageItems = [
-  new MenuItem('fa fa-sitemap', 'Organizations', 'organizations'),
-  new MenuItem('fa fa-map-marker', 'Locations', 'locations'),
-  new MenuItem('fa fa-cube', 'Rooms', 'rooms'),
-  new MenuItem('fa fa-thermometer-half', 'Sensors', 'sensors'),
+  // TODO:  new MenuItem('fa fa-sitemap', 'Organizations', 'organizations'),
   new MenuItem('fa fa-tools', 'Installations', 'installations')
 ];
 const items = [
