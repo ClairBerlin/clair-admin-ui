@@ -10,7 +10,7 @@
             expand-separator
             default-opened
             v-for="org in allOrganizations"
-            :key="org.attributes.name"
+            :key="org.id"
             v-bind:label="org.attributes.name"
           >
             <q-list
@@ -79,7 +79,8 @@ export default {
         const parent = { type: 'organizations', id: org.id };
         await this.loadRelatedUsers({ parent });
         const user = this.getRelatedUsers({ parent });
-        this.orgUsers[org.id] = user;
+        // Reactively change the array. See https://vuejs.org/v2/guide/reactivity.html#For-Arrays
+        this.$set(this.orgUsers, org.id, user);
       }
       this.usersIsLoading = false;
     }
