@@ -16,6 +16,14 @@
           Clair Admin UI
         </q-toolbar-title>
 
+        <q-toolbar-title v-if="selectedOrg">
+          {{ selectedOrg.attributes.name }}
+        </q-toolbar-title>
+        <q-toolbar-title v-else>
+          No Organization
+        </q-toolbar-title>
+
+
         <q-btn-dropdown round dense flat color="white" :label="$i18n.locale">
           <q-list style="min-width: 100px">
             <q-item
