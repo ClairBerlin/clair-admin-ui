@@ -48,14 +48,13 @@ export default (function() {
         name: 'addresses',
         httpClient: httpClient
       }),
-      // Organization: resourceModule({
-      //   name: 'organizations',
-      //   httpClient: httpClient
-      // }),
+      Organization: resourceModule({
+        name: 'organizations',
+        httpClient: httpClient
+      }),
       ...mapResourceModules({
         names: [
           'users',
-          'organizations',
           'sites',
           'rooms',
           'nodes',

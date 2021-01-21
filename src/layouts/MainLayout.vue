@@ -210,13 +210,13 @@ export default {
   computed: {
     ...mapGetters({
       getUserById: 'users/byId',
-      getOrgsRelated: 'organizations/related'
+      getOrgsRelated: 'Organization/related'
     })
   },
   methods: {
     ...mapActions({
       loadUserById: 'users/loadById',
-      loadOrgsRelated: 'organizations/loadRelated'
+      loadOrgsRelated: 'Organization/loadRelated'
     }),
     openFaq() {
       return openURL('https://clair-berlin.de/faq.html');
