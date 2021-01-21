@@ -9,10 +9,14 @@ Vue.use(Vuex);
 const httpClient = axios.create({
   baseURL: '/api/v1/',
   headers: {
-    common: {
-      'Content-Type': 'application/vnd.api+json'
-    }
-  }
+    'Content-Type': 'application/vnd.api+json',
+    Accept: 'application/vnd.api+json, application/json, text/plain, */*'
+  },
+  // To work with Django's CSRF protection. Read the CSRF token from the cookie and
+  // return it in a CSRF-header with each request.
+  // See https://build.vsupalov.com/avoid-csrf-errors-axios-django/
+  xsrfCookieName: 'csrftoken',
+  xsrfHeaderName: 'X-CSRFTOKEN'
 });
 
 function redirectOn401(error) {
