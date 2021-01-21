@@ -5,6 +5,7 @@
       <q-list bordered separator>
         <p v-if="organizationIsLoading">Loading...</p>
         <p v-else-if="organizationIsError">Error loading organizations.</p>
+        <p v-else-if="areMembersLoading">Error loading organization members.</p>
         <ul v-else>
           <q-expansion-item
             expand-separator
@@ -12,19 +13,20 @@
             v-for="org in allOrganizations"
             :key="org.id"
             v-bind:label="org.attributes.name"
+            v-bind:caption="'Members: ' + orgMembers[org.id].length"
           >
             <q-list
               bordered
               separator
-              v-for="pers in orgUsers[org.id]"
-              :key="pers.id"
+              v-for="member in orgMembers[org.id]"
+              :key="member.id"
             >
               <q-item clickable v-ripple>
                 <q-item-section>
                   <q-icon name="perm_identity" />
                 </q-item-section>
                 <q-item-section>
-                  {{ pers.attributes.username }}
+                  {{ member.attributes.user_name }}
                 </q-item-section>
               </q-item>
             </q-list>
@@ -86,9 +88,9 @@ export default {
   name: 'Organizations',
   data() {
     return {
-      usersIsLoading: false, // Loading of user data under way?
-      usersIsError: null, // Did fetching user data end with an error?
-      orgUsers: [], // Users of all organizations the authenticated user is a member of.
+      areMembersLoading: false,
+      isMemberLoadingError: null,
+      orgMembers: [], // Members of all organizations the authenticated user is a member of.
       newOrgName: null,
       newOrgDesc: null
     };
@@ -100,7 +102,7 @@ export default {
     allOrganizations: {
       immediate: true, // Trigger user fetch, n case organizations are already loaded.
       handler: async function(newOrgs) {
-        this.fetchUsers();
+        this.fetchMembers();
       }
     }
   },
@@ -109,27 +111,40 @@ export default {
       organizationIsLoading: 'Organization/isLoading',
       organizationIsError: 'Organization/isError',
       allOrganizations: 'Organization/all',
-      getRelatedUsers: 'users/related'
+      getRelatedMembers: `Membership/related`
     })
   },
   methods: {
     ...mapActions({
-      loadRelatedUsers: 'users/loadRelated'
+      loadRelatedMembers: 'Membership/loadRelated'
     }),
-    async fetchUsers() {
+    async fetchMembers() {
       // For now, assume that the organizations are fetched already.
-      this.usersIsLoading = true;
+      this.areMembersLoading = true;
       const organizations = this.allOrganizations;
-      for (const org of organizations) {
-        // This loop will execute in order, despite the asynchronous fetch.
-        // See https://lavrton.com/javascript-loops-how-to-handle-async-await-6252dd3c795/
-        const parent = { type: 'organizations', id: org.id };
-        await this.loadRelatedUsers({ parent });
-        const user = this.getRelatedUsers({ parent });
-        // Reactively change the array. See https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-        this.$set(this.orgUsers, org.id, user);
+      try {
+        for (const org of organizations) {
+          // This loop will execute in order, despite the asynchronous fetch.
+          // See https://lavrton.com/javascript-loops-how-to-handle-async-await-6252dd3c795/
+          const parent = { type: 'organizations', id: org.id };
+          await this.loadRelatedMembers({ parent });
+          const members = this.getRelatedMembers({ parent });
+          console.log(members);
+          // Reactively change the array. See https://vuejs.org/v2/guide/reactivity.html#For-Arrays
+          this.$set(this.orgMembers, org.id, members);
+        }
+      } catch (error) {
+        console.log(error);
+        this.isMemberLoadingError = true;
+        this.$q.notify({
+          color: 'red',
+          textColor: 'white',
+          icon: 'error',
+          message: `Could not fetch members of all organizations.`
+        });
+      } finally {
+        this.areMembersLoading = false;
       }
-      this.usersIsLoading = false;
     },
     onReset() {
       this.newOrgName = null;

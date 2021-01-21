@@ -52,6 +52,10 @@ export default (function() {
         name: 'organizations',
         httpClient: httpClient
       }),
+      Membership: resourceModule({
+        name: 'memberships',
+        httpClient: httpClient
+      }),
       ...mapResourceModules({
         names: [
           'users',
