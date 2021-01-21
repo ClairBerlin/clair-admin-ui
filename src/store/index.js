@@ -14,6 +14,8 @@ const httpClient = axios.create({
     }
   }
 });
+httpClient.defaults.xsrfHeaderName = 'X-CSRFToken';
+httpClient.defaults.xsrfCookieName = 'csrftoken';
 
 function redirectOn401(error) {
   console.log(error);
