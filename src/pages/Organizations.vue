@@ -33,29 +33,39 @@
       </q-list>
     </div>
     <div class="q-pa-md" style="max-width: 500px">
-      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-        <q-input
-          filled
-          v-model="newOrgName"
-          label="Organization"
-          hint="Name of your new organization"
-          lazy-rules
-          :rules="[
-            val =>
-              (val && val.length > 2) ||
-              'Please enter an organization name of at least three characters.'
-          ]"
-        />
+      <q-card class="my-card">
+        <q-card-section>
+          <div class="text-h6">Add an Organization</div>
+          <div class="text-subtitle3">You will be its owner</div>
+        </q-card-section>
 
-        <q-input
-          filled
-          v-model="newOrgDesc"
-          label="Description (optional)"
-          hint="Describe your organization"
-          lazy-rules
-        />
+        <q-separator />
+        <q-card-section>
+          <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+            <q-input
+              filled
+              v-model="newOrgName"
+              label="Organization"
+              hint="Name of your new organization"
+              lazy-rules
+              :rules="[
+                val =>
+                  (val && val.length > 2) ||
+                  'Please enter an organization name of at least three characters.'
+              ]"
+            />
 
-        <div>
+            <q-input
+              filled
+              v-model="newOrgDesc"
+              label="Description (optional)"
+              hint="Describe your organization"
+              lazy-rules
+            />
+          </q-form>
+        </q-card-section>
+
+        <q-card-actions align="right">
           <q-btn label="Create Organization" type="submit" color="primary" />
           <q-btn
             label="Reset"
@@ -64,8 +74,8 @@
             flat
             class="q-ml-sm"
           />
-        </div>
-      </q-form>
+        </q-card-actions>
+      </q-card>
     </div>
   </q-page>
 </template>
@@ -124,17 +134,32 @@ export default {
     onReset() {
       this.newOrgName = null;
       this.newOrgDesc = null;
-      console.log('reset succeeded.');
     },
-    onSubmit(event) {
+    async onSubmit(event) {
       const newOrg = {
         attributes: {
           name: this.newOrgName,
           description: this.newOrgDesc
         },
         type: 'Organization'
+      };
+      try {
+        await this.$store.dispatch('Organization/create', newOrg);
+        this.$q.notify({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: `Organization ${newOrg.name} created.`
+        });
+      } catch (error) {
+        console.log(error);
+        this.$q.notify({
+          color: 'red',
+          textColor: 'white',
+          icon: 'error',
+          message: `Could not create the organization; maybe it already exists?`
+        });
       }
-      this.$store.dispatch('Organization/create', newOrg);
     }
   }
 };
