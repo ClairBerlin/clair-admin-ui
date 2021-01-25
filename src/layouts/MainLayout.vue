@@ -1,66 +1,31 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          v-if="isLoggedIn()"
-          flat
-          dense
+      <q-toolbar class="row justify-between" @hook:mounted="loadUserOrgs()">
+        <div class="row">
+          <q-btn
+            v-if="isLoggedIn()"
+            flat
+            dense
+            round
+            icon="menu"
+            aria-label="Menu"
+            @click="leftDrawerOpen = !leftDrawerOpen"
+          />
+          <img class="clair-logo" src="~assets/clair-logo.svg" />
+          <q-toolbar-title class="clair-title">
+            Clair Admin UI
+          </q-toolbar-title>
+        </div>
+
+        <q-btn-dropdown
+          no-caps
+          stretch
           round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
-        <img class="clair-logo" src="~assets/clair-logo.svg" />
-        <q-toolbar-title class="clair-title">
-          Clair Admin UI
-        </q-toolbar-title>
-
-        <q-toolbar-title v-if="selectedOrg">
-          {{ selectedOrg.attributes.name }}
-        </q-toolbar-title>
-        <q-toolbar-title v-else>
-          No Organization
-        </q-toolbar-title>
-
-
-        <q-btn-dropdown round dense flat color="white" :label="$i18n.locale">
-          <q-list style="min-width: 100px">
-            <q-item
-              clickable
-              v-close-popup
-              v-for="option in langOptions"
-              :key="option.value"
-              @click="setLang(option.value)"
-            >
-              <q-item-section>
-                <q-item-label>{{ option.label }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-
-        <q-btn
-          v-if="isLoggedIn()"
           flat
-          dense
-          round
-          @click="logout()"
-          icon="fas fa-sign-out-alt"
-        />
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer
-      @hook:mounted="loadUserOrgs()"
-      v-model="leftDrawerOpen"
-      show-if-above
-      :width="220"
-      :breakpoint="500"
-      bordered
-    >
-      <div class="q-pa-md row flex-center">
-        <q-btn-dropdown :label="toLabel(selectedOrg)" v-if="orgs.length > 1">
+          color="white"
+          :label="headerLabel"
+        >
           <q-list style="min-width: 100px">
             <q-item
               clickable
@@ -70,15 +35,78 @@
               @click="selectedOrg = org"
             >
               <q-item-section>
-                <q-item-label>{{ org.attributes.name }}</q-item-label>
+                <router-link :to="{ name: 'dashboard' }">
+                  {{ org.attributes.name }}
+                </router-link>
               </q-item-section>
             </q-item>
+            <q-separator />
+            <q-item clickable v-close-popup>
+              <q-item-section avatar>
+                <q-icon name="groups" />
+              </q-item-section>
+              <q-item-section>
+                <router-link :to="{ name: 'organizations' }"
+                  >Manage my Organizations</router-link
+                >
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item-label header>Manage my Account</q-item-label>
+            <template v-for="item in accountItems">
+              <q-item
+                :key="item.name"
+                :inset-level="0.5"
+                clickable
+                v-close-popup
+                v-ripple
+                @click="openAccountSettings(item.path)"
+              >
+                <q-item-section>
+                  {{ $t(item.name) }}
+                </q-item-section>
+              </q-item>
+            </template>
           </q-list>
         </q-btn-dropdown>
-        <q-btn disable :label="toLabel(selectedOrg)" v-else />
-      </div>
 
-      <q-separator />
+        <div class="row">
+          <q-btn-dropdown round dense flat color="white" :label="$i18n.locale">
+            <q-list style="min-width: 100px">
+              <q-item
+                clickable
+                v-close-popup
+                v-for="option in langOptions"
+                :key="option.value"
+                @click="setLang(option.value)"
+              >
+                <q-item-section>
+                  <q-item-label>{{ option.label }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+
+          <q-btn
+            v-if="isLoggedIn()"
+            flat
+            dense
+            round
+            @click="logout()"
+            icon="fas fa-sign-out-alt"
+          />
+        </div>
+      </q-toolbar>
+    </q-header>
+
+    <q-drawer
+      v-if="showDrawer"
+      v-model="leftDrawerOpen"
+      show-if-above
+      :width="220"
+      :breakpoint="500"
+      bordered
+    >
       <q-list>
         <q-expansion-item
           key="account"
@@ -211,7 +239,24 @@ export default {
     ...mapGetters({
       getUserById: 'users/byId',
       getOrgsRelated: 'Organization/related'
-    })
+    }),
+    selectedOrgLabel() {
+      if (this.selectedOrg) {
+        return this.selectedOrg.attributes.name;
+      } else {
+        return 'No Organization';
+      }
+    },
+    headerLabel() {
+      if (this.$route.name === 'organizations') {
+        return 'My Organizations';
+      } else {
+        return this.selectedOrgLabel;
+      }
+    },
+    showDrawer() {
+      return this.$route.name !== 'organizations';
+    }
   },
   methods: {
     ...mapActions({

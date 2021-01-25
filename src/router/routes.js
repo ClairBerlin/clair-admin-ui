@@ -9,8 +9,8 @@ const routes = [
         component: () => import('pages/Dashboard.vue')
       },
       {
-        path: 'organization',
-        name: 'organization',
+        path: 'organizations',
+        name: 'organizations',
         component: () => import('pages/Organizations.vue')
       }
     ]

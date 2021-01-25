@@ -3,9 +3,8 @@
     <div class="text-h4">My Organizations</div>
     <div class="q-pa-md" style="max-width: 500px">
       <q-list bordered separator>
-        <p v-if="organizationIsLoading">Loading...</p>
-        <p v-else-if="organizationIsError">Error loading organizations.</p>
-        <p v-else-if="areMembersLoading">Error loading organization members.</p>
+        <p v-if="isLoading">Loading...</p>
+        <p v-else-if="isLoadingError">Error loading organizations or members.</p>
         <ul v-else>
           <q-expansion-item
             expand-separator
@@ -41,12 +40,19 @@
       </q-list>
     </div>
 
-    <q-dialog v-model="addOrgDialog" persistent>
+    <q-dialog v-model="addOrgDialog">
       <q-card class="my-card">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Add an Organization</div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-btn
+            icon="close"
+            flat
+            round
+            dense
+            @click="resetForm"
+            v-close-popup
+          />
         </q-card-section>
         <q-card-section>
           <div class="text-subtitle3">You will be its owner</div>
@@ -137,7 +143,13 @@ export default {
       organizationIsError: 'Organization/isError',
       allOrganizations: 'Organization/all',
       getRelatedMembers: `Membership/related`
-    })
+    }),
+    isLoading() {
+      return this.organizationIsLoading || this.areMembersLoading;
+    },
+    isLoadingError() {
+      return this.organizationIsError || this. isMemberLoadingError
+    }
   },
   methods: {
     ...mapActions({
