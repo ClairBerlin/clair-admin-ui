@@ -84,7 +84,7 @@
               :inset-level="0.5"
               clickable
               v-ripple
-              @click="openAccountSettings(item.path)"
+              @click="openAccountSettings(item.path, item.newTab)"
             >
               <q-item-section>
                 {{ $t(item.name) }}
@@ -166,8 +166,8 @@ class MenuItem {
 }
 
 const accountItems = [
-  { name: 'Manage Email', path: '/accounts/email' },
-  { name: 'Change Password', path: '/accounts/password/change' }
+  { name: 'Manage Email', path: '/accounts/email', newTab: true },
+  { name: 'Change Password', path: '/accounts/password/change', newTab: false }
 ];
 
 const manageItems = [
@@ -213,8 +213,12 @@ export default {
     openFaq() {
       return openURL('https://clair-berlin.de/faq.html');
     },
-    openAccountSettings(path) {
-      return openURL(window.location.origin + path);
+    openAccountSettings(path, openInNewTab) {
+      const url = window.location.origin + path;
+      if (openInNewTab) {
+        return openURL(url);
+      }
+      window.location.href = url;
     },
     loadUserOrgs: async function() {
       const uid = await this.$store.dispatch('user/getUserId');
