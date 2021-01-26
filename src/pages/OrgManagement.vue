@@ -115,7 +115,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 export default {
-  name: 'Organizations',
+  name: 'OrgManagement',
   data() {
     return {
       addOrgDialog: false,

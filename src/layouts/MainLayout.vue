@@ -4,7 +4,7 @@
       <q-toolbar class="row justify-between" @hook:mounted="loadUserOrgs()">
         <div class="row">
           <q-btn
-            v-if="isLoggedIn()"
+            v-if="isLoggedIn() && showDrawer"
             flat
             dense
             round
@@ -27,15 +27,11 @@
           :label="headerLabel"
         >
           <q-list style="min-width: 100px">
-            <q-item
-              clickable
-              v-close-popup
-              v-for="org in orgs"
-              :key="org.id"
-              @click="selectedOrg = org"
-            >
+            <q-item clickable v-close-popup v-for="org in orgs" :key="org.id">
               <q-item-section>
-                <router-link :to="{ name: 'dashboard' }">
+                <router-link
+                  :to="{ name: 'graphs', params: { orgId: org.id } }"
+                >
                   {{ org.attributes.name }}
                 </router-link>
               </q-item-section>
@@ -46,7 +42,7 @@
                 <q-icon name="groups" />
               </q-item-section>
               <q-item-section>
-                <router-link :to="{ name: 'organizations' }"
+                <router-link :to="{ name: 'org-management' }"
                   >Manage my Organizations</router-link
                 >
               </q-item-section>
@@ -181,7 +177,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :selectedOrg="selectedOrg" />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -207,7 +203,10 @@ const accountItems = [
 ];
 
 const manageItems = [
-  // TODO:  new MenuItem('fa fa-sitemap', 'Organizations', 'organizations'),
+  new MenuItem('fa fa-sitemap', 'Organizations', 'org-management'),
+  new MenuItem('fa fa-map-marker', 'Locations', 'locations'),
+  new MenuItem('fa fa-cube', 'Rooms', 'rooms'),
+  new MenuItem('fa fa-thermometer-half', 'Sensors', 'sensors'),
   new MenuItem('fa fa-tools', 'Installations', 'installations')
 ];
 const items = [
@@ -216,7 +215,6 @@ const items = [
 ];
 
 const orgs = [];
-const selectedOrg = null;
 
 export default {
   name: 'MainLayout',
@@ -231,8 +229,7 @@ export default {
       items: items,
       accountItems: accountItems,
       manageItems: manageItems,
-      orgs: orgs,
-      selectedOrg: selectedOrg
+      orgs: orgs
     };
   },
   computed: {
@@ -241,21 +238,24 @@ export default {
       getOrgsRelated: 'Organization/related'
     }),
     selectedOrgLabel() {
-      if (this.selectedOrg) {
-        return this.selectedOrg.attributes.name;
-      } else {
-        return 'No Organization';
+      let label = 'No Organization';
+      if (this.$route.name === 'graphs') {
+        const selectedOrg = this.orgById(this.$route.params.orgId);
+        if (selectedOrg) {
+          label = selectedOrg.attributes.name;
+        }
       }
+      return label;
     },
     headerLabel() {
-      if (this.$route.name === 'organizations') {
+      if (this.$route.name === 'org-management') {
         return 'My Organizations';
       } else {
         return this.selectedOrgLabel;
       }
     },
     showDrawer() {
-      return this.$route.name !== 'organizations';
+      return this.$route.name !== 'org-management';
     }
   },
   methods: {
@@ -263,6 +263,9 @@ export default {
       loadUserById: 'users/loadById',
       loadOrgsRelated: 'Organization/loadRelated'
     }),
+    orgById(orgId) {
+      return this.orgs.find(org => org.id == orgId);
+    },
     openFaq() {
       return openURL('https://clair-berlin.de/faq.html');
     },
@@ -280,16 +283,6 @@ export default {
       await this.loadOrgsRelated({ parent });
       const orgs = this.getOrgsRelated({ parent });
       this.orgs = orgs;
-      this.selectedOrg = orgs[0];
-    },
-    toLabel(org, maxLength = 15) {
-      if (!org) {
-        return '-';
-      }
-      if (org.attributes.name.length > maxLength) {
-        return org.attributes.name.substring(0, maxLength) + ' ...';
-      }
-      return org.attributes.name;
     },
     setLang(lang) {
       this.$i18n.locale = lang;
