@@ -28,12 +28,12 @@
         >
           <q-list style="min-width: 100px">
             <q-item clickable v-close-popup v-for="org in orgs" :key="org.id">
-              <q-item-section>
-                <router-link
-                  :to="{ name: 'graphs', params: { orgId: org.id } }"
-                >
-                  {{ org.attributes.name }}
-                </router-link>
+              <q-item-section
+                @click="
+                  $router.push({ name: 'graphs', params: { orgId: org.id } })
+                "
+              >
+                {{ org.attributes.name }}
               </q-item-section>
             </q-item>
             <q-separator />
@@ -41,10 +41,8 @@
               <q-item-section avatar>
                 <q-icon name="groups" />
               </q-item-section>
-              <q-item-section>
-                <router-link :to="{ name: 'org-management' }"
-                  >Manage my Organizations</router-link
-                >
+              <q-item-section @click="$router.push({ name: 'org-management' })">
+                Manage my Organizations
               </q-item-section>
             </q-item>
             <q-separator />
@@ -104,28 +102,7 @@
       bordered
     >
       <q-list>
-        <q-expansion-item
-          key="account"
-          :label="$t('My Account')"
-          icon="fa fa-user"
-          default-closed
-        >
-          <template v-for="item in accountItems">
-            <q-item
-              :key="item.name"
-              :inset-level="0.5"
-              clickable
-              v-ripple
-              @click="openAccountSettings(item.path, item.newTab)"
-            >
-              <q-item-section>
-                {{ $t(item.name) }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-expansion-item>
-        <q-separator />
-        <q-expansion-item
+        <!-- <q-expansion-item
           key="manage"
           :label="$t('Manage')"
           icon="settings"
@@ -149,7 +126,7 @@
               </q-item-section>
             </q-item>
           </template>
-        </q-expansion-item>
+        </q-expansion-item> -->
         <q-separator />
         <q-item
           tag="a"
