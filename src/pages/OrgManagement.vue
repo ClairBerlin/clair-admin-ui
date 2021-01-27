@@ -4,7 +4,9 @@
     <div class="q-pa-md" style="max-width: 500px">
       <q-list bordered separator>
         <p v-if="isLoading">Loading...</p>
-        <p v-else-if="isLoadingError">Error loading organizations or members.</p>
+        <p v-else-if="isLoadingError">
+          Error loading organizations or members.
+        </p>
         <ul v-else>
           <q-expansion-item
             expand-separator
@@ -148,7 +150,7 @@ export default {
       return this.organizationIsLoading || this.areMembersLoading;
     },
     isLoadingError() {
-      return this.organizationIsError || this. isMemberLoadingError
+      return this.organizationIsError || this.isMemberLoadingError;
     }
   },
   methods: {
@@ -200,7 +202,7 @@ export default {
           color: 'green-4',
           textColor: 'white',
           icon: 'cloud_done',
-          message: `Organization ${newOrg.name} created.`
+          message: `Organization ${newOrg.attributes.name} created.`
         });
       } catch (error) {
         console.log(error);
@@ -208,7 +210,7 @@ export default {
           color: 'red',
           textColor: 'white',
           icon: 'error',
-          message: `Could not create the organization; maybe it already exists?`
+          message: `Could not create the organization ${newOrg.attributes.name}; maybe it already exists?`
         });
       } finally {
         this.resetForm();
