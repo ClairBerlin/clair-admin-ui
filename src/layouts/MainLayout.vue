@@ -226,7 +226,7 @@ export default {
     },
     headerLabel() {
       if (this.$route.name === 'org-management') {
-        return 'My Organizations';
+        return 'Manage Organizations';
       } else {
         return this.selectedOrgLabel;
       }

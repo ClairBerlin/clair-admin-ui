@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="text-h4">My Organizations</div>
+    <div class="text-h4">Manage Organizations</div>
     <div class="q-pa-md" style="max-width: 500px">
       <q-list bordered separator>
         <p v-if="isLoading">Loading...</p>
