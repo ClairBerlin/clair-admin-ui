@@ -1,6 +1,5 @@
-diff -ruN @reststate/client/src/Resource.js @reststate.NEW/client/src/Resource.js
---- @reststate/client/src/Resource.js	2020-09-25 22:10:20.735115821 +0200
-+++ @reststate.NEW/client/src/Resource.js	2020-09-25 22:48:19.825212323 +0200
+--- @reststate.ORIG/client/src/Resource.js	2021-01-21 08:44:31.000000000 +0100
++++ @reststate/client/src/Resource.js	2021-01-21 08:47:27.000000000 +0100
 @@ -48,7 +48,7 @@
      if (options.url) {
        ({ url } = options);
@@ -10,12 +9,42 @@ diff -ruN @reststate/client/src/Resource.js @reststate.NEW/client/src/Resource.j
      }
  
      return this.api
-@@ -69,7 +69,7 @@
+@@ -58,7 +58,7 @@
+   }
+ 
+   find({ id, options } = {}) {
+-    const url = `${this.name}/${id}?${getOptionsQuery(options)}`;
++    const url = `${this.name}/${id}/?${getOptionsQuery(options)}`;
+ 
+     return this.api
+       .get(url)
+@@ -69,14 +69,14 @@
    where({ filter, options } = {}) {
      const queryString = filterQueryString(filter);
      return this.api
 -      .get(`${this.name}?${queryString}&${getOptionsQuery(options)}`)
 +      .get(`${this.name}/?${queryString}&${getOptionsQuery(options)}`)
+       .then(extractData)
+       .catch(extractErrorResponse);
+   }
+ 
+   related({ parent, relationship = this.name, options }) {
+     const baseUrl = relatedResourceUrl({ parent, relationship });
+-    const url = `${baseUrl}?${getOptionsQuery(options)}`;
++    const url = `${baseUrl}/?${getOptionsQuery(options)}`;
+     return this.api
+       .get(url)
+       .then(extractData)
+@@ -84,10 +84,10 @@
+   }
+ 
+   create(partialRecord) {
+-    const record = Object.assign({}, partialRecord, { type: this.name });
++    const record = Object.assign({}, { type: this.name }, partialRecord);
+     const requestData = { data: record };
+     return this.api
+-      .post(`${this.name}`, requestData)
++      .post(`${this.name}/`, requestData)
        .then(extractData)
        .catch(extractErrorResponse);
    }

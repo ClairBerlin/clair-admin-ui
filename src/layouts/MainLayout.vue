@@ -1,99 +1,108 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          v-if="isLoggedIn()"
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
-        <img class="clair-logo" src="~assets/clair-logo.svg" />
-        <q-toolbar-title class="clair-title">
-          Clair Admin UI
-        </q-toolbar-title>
+      <q-toolbar class="row justify-between" @hook:mounted="loadUserOrgs()">
+        <div class="row">
+          <q-btn
+            v-if="isLoggedIn() && showDrawer"
+            flat
+            dense
+            round
+            icon="menu"
+            aria-label="Menu"
+            @click="leftDrawerOpen = !leftDrawerOpen"
+          />
+          <img class="clair-logo" src="~assets/clair-logo.svg" />
+          <q-toolbar-title class="clair-title">
+            Clair Admin UI
+          </q-toolbar-title>
+        </div>
 
-        <q-btn-dropdown round dense flat color="white" :label="$i18n.locale">
+        <q-btn-dropdown
+          no-caps
+          stretch
+          round
+          flat
+          color="white"
+          :label="headerLabel"
+        >
           <q-list style="min-width: 100px">
-            <q-item
-              clickable
-              v-close-popup
-              v-for="option in langOptions"
-              :key="option.value"
-              @click="setLang(option.value)"
-            >
-              <q-item-section>
-                <q-item-label>{{ option.label }}</q-item-label>
+            <q-item clickable v-close-popup v-for="org in orgs" :key="org.id">
+              <q-item-section
+                @click="
+                  $router.push({ name: 'graphs', params: { orgId: org.id } })
+                "
+              >
+                {{ org.attributes.name }}
               </q-item-section>
             </q-item>
+            <q-separator />
+            <q-item clickable v-close-popup>
+              <q-item-section avatar>
+                <q-icon name="groups" />
+              </q-item-section>
+              <q-item-section @click="$router.push({ name: 'org-management' })">
+                Manage my Organizations
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item-label header>Manage my Account</q-item-label>
+            <template v-for="item in accountItems">
+              <q-item
+                :key="item.name"
+                :inset-level="0.5"
+                clickable
+                v-close-popup
+                v-ripple
+                @click="openAccountSettings(item.path)"
+              >
+                <q-item-section>
+                  {{ $t(item.name) }}
+                </q-item-section>
+              </q-item>
+            </template>
           </q-list>
         </q-btn-dropdown>
 
-        <q-btn
-          v-if="isLoggedIn()"
-          flat
-          dense
-          round
-          @click="logout()"
-          icon="fas fa-sign-out-alt"
-        />
+        <div class="row">
+          <q-btn-dropdown round dense flat color="white" :label="$i18n.locale">
+            <q-list style="min-width: 100px">
+              <q-item
+                clickable
+                v-close-popup
+                v-for="option in langOptions"
+                :key="option.value"
+                @click="setLang(option.value)"
+              >
+                <q-item-section>
+                  <q-item-label>{{ option.label }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+
+          <q-btn
+            v-if="isLoggedIn()"
+            flat
+            dense
+            round
+            @click="logout()"
+            icon="fas fa-sign-out-alt"
+          />
+        </div>
       </q-toolbar>
     </q-header>
 
     <q-drawer
-      @hook:mounted="loadUserOrgs()"
+      v-if="showDrawer"
       v-model="leftDrawerOpen"
       show-if-above
       :width="220"
       :breakpoint="500"
       bordered
     >
-      <div class="q-pa-md row flex-center">
-        <q-btn-dropdown :label="toLabel(selectedOrg)" v-if="orgs.length > 1">
-          <q-list style="min-width: 100px">
-            <q-item
-              clickable
-              v-close-popup
-              v-for="org in orgs"
-              :key="org.id"
-              @click="selectedOrg = org"
-            >
-              <q-item-section>
-                <q-item-label>{{ org.attributes.name }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-        <q-btn disable :label="toLabel(selectedOrg)" v-else />
-      </div>
-
-      <q-separator />
       <q-list>
-        <q-expansion-item
-          key="account"
-          :label="$t('My Account')"
-          icon="fa fa-user"
-          default-closed
-        >
-          <template v-for="item in accountItems">
-            <q-item
-              :key="item.name"
-              :inset-level="0.5"
-              clickable
-              v-ripple
-              @click="openAccountSettings(item.path, item.newTab)"
-            >
-              <q-item-section>
-                {{ $t(item.name) }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-expansion-item>
-        <q-separator />
-        <q-expansion-item
+        <!-- <q-expansion-item
           key="manage"
           :label="$t('Manage')"
           icon="settings"
@@ -117,7 +126,7 @@
               </q-item-section>
             </q-item>
           </template>
-        </q-expansion-item>
+        </q-expansion-item> -->
         <q-separator />
         <q-item
           tag="a"
@@ -145,7 +154,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :selectedOrg="selectedOrg" />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -171,7 +180,10 @@ const accountItems = [
 ];
 
 const manageItems = [
-  // TODO:  new MenuItem('fa fa-sitemap', 'Organizations', 'organizations'),
+  new MenuItem('fa fa-sitemap', 'Organizations', 'org-management'),
+  new MenuItem('fa fa-map-marker', 'Locations', 'locations'),
+  new MenuItem('fa fa-cube', 'Rooms', 'rooms'),
+  new MenuItem('fa fa-thermometer-half', 'Sensors', 'sensors'),
   new MenuItem('fa fa-tools', 'Installations', 'installations')
 ];
 const items = [
@@ -180,7 +192,6 @@ const items = [
 ];
 
 const orgs = [];
-const selectedOrg = null;
 
 export default {
   name: 'MainLayout',
@@ -195,21 +206,43 @@ export default {
       items: items,
       accountItems: accountItems,
       manageItems: manageItems,
-      orgs: orgs,
-      selectedOrg: selectedOrg
+      orgs: orgs
     };
   },
   computed: {
     ...mapGetters({
       getUserById: 'users/byId',
-      getOrgsRelated: 'organizations/related'
-    })
+      getOrgsRelated: 'Organization/related'
+    }),
+    selectedOrgLabel() {
+      let label = 'No Organization';
+      if (this.$route.name === 'graphs') {
+        const selectedOrg = this.orgById(this.$route.params.orgId);
+        if (selectedOrg) {
+          label = selectedOrg.attributes.name;
+        }
+      }
+      return label;
+    },
+    headerLabel() {
+      if (this.$route.name === 'org-management') {
+        return 'Manage Organizations';
+      } else {
+        return this.selectedOrgLabel;
+      }
+    },
+    showDrawer() {
+      return this.$route.name !== 'org-management';
+    }
   },
   methods: {
     ...mapActions({
       loadUserById: 'users/loadById',
-      loadOrgsRelated: 'organizations/loadRelated'
+      loadOrgsRelated: 'Organization/loadRelated'
     }),
+    orgById(orgId) {
+      return this.orgs.find(org => org.id == orgId);
+    },
     openFaq() {
       return openURL('https://clair-berlin.de/faq.html');
     },
@@ -227,16 +260,6 @@ export default {
       await this.loadOrgsRelated({ parent });
       const orgs = this.getOrgsRelated({ parent });
       this.orgs = orgs;
-      this.selectedOrg = orgs[0];
-    },
-    toLabel(org, maxLength = 15) {
-      if (!org) {
-        return '-';
-      }
-      if (org.attributes.name.length > maxLength) {
-        return org.attributes.name.substring(0, maxLength) + ' ...';
-      }
-      return org.attributes.name;
     },
     setLang(lang) {
       this.$i18n.locale = lang;

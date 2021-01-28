@@ -4,14 +4,14 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '',
-        name: 'dashboard',
-        component: () => import('pages/Dashboard.vue')
+        path: ':orgId/graphs',
+        name: 'graphs',
+        component: () => import('pages/Graphs.vue')
       },
       {
-        path: 'installations',
-        name: 'installations',
-        component: () => import('pages/Installations.vue')
+        path: 'org-management',
+        name: 'org-management',
+        component: () => import('pages/OrgManagement.vue')
       }
     ]
   },

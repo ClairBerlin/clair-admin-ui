@@ -21,10 +21,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import InstallationCard from '../components/InstallationCard.vue';
 export default {
-  name: 'Dashboard',
-  props: {
-    selectedOrg: Object
-  },
+  name: 'Graphs',
   components: { InstallationCard },
   data() {
     return {
@@ -67,8 +64,8 @@ export default {
       const node = this.getNodeById({ id: nodeId });
       return node.attributes.alias;
     },
-    async getSitesForOrg(org) {
-      let parent = { type: 'organizations', id: org.id };
+    async getSitesForOrg(orgId) {
+      let parent = { type: 'organizations', id: orgId };
       await this.loadSitesRelated({ parent });
       return this.getSitesRelated({ parent });
     },
@@ -87,8 +84,8 @@ export default {
       await this.loadNodeById({ id: nodeId });
       return this.getNodeById({ id: nodeId });
     },
-    getInstallationsForOrg: async function(organization) {
-      const sites = await this.getSitesForOrg(organization);
+    getInstallationsForOrg: async function(orgId) {
+      const sites = await this.getSitesForOrg(orgId);
       if (!sites) return;
       for (const site of sites) {
         const rooms = await this.getRoomsForSite(site);
@@ -112,16 +109,15 @@ export default {
       }
     }
   },
-  mounted() {
-    if (this.selectedOrg) {
-      this.getInstallationsForOrg(this.selectedOrg);
-    }
-  },
   watch: {
-    selectedOrg: async function(newOrg) {
-      // clear installations of any previously selected organization
-      this.installations = [];
-      this.getInstallationsForOrg(newOrg);
+    $route: {
+      immediate: true,
+      handler: async function(to, from) {
+        // Clear installations of any previously selected organization.
+        this.installations = [];
+        const orgId = parseInt(to.params.orgId);
+        this.getInstallationsForOrg(orgId);
+      }
     }
   }
 };
