@@ -30,7 +30,7 @@
             <q-item
               clickable
               v-close-popup
-              v-for="org in userOrgs"
+              v-for="org in allOrganizations"
               :key="org.id"
             >
               <q-item-section
@@ -214,7 +214,8 @@ export default {
   computed: {
     ...mapGetters({
       getUserById: 'users/byId',
-      getOrgsRelated: 'Organization/related',
+      getOrgsRelated: 'Organization/related', // Needs parent arg -> not reactive.
+      allOrganizations: 'Organization/all',
       isLoggedIn: 'user/isLoggedIn',
       getUserId: 'user/getUserId'
     }),
