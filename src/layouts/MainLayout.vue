@@ -1,10 +1,10 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar class="row justify-between" @hook:mounted="loadUserOrgs()">
+      <q-toolbar class="row justify-between">
         <div class="row">
           <q-btn
-            v-if="isLoggedIn() && showDrawer"
+            v-if="isLoggedIn && showDrawer"
             flat
             dense
             round
@@ -27,7 +27,12 @@
           :label="headerLabel"
         >
           <q-list style="min-width: 100px">
-            <q-item clickable v-close-popup v-for="org in orgs" :key="org.id">
+            <q-item
+              clickable
+              v-close-popup
+              v-for="org in userOrgs"
+              :key="org.id"
+            >
               <q-item-section
                 @click="
                   $router.push({ name: 'graphs', params: { orgId: org.id } })
@@ -82,7 +87,7 @@
           </q-btn-dropdown>
 
           <q-btn
-            v-if="isLoggedIn()"
+            v-if="isLoggedIn"
             flat
             dense
             round
@@ -164,7 +169,7 @@ import de from 'quasar/lang/de';
 import en from 'quasar/lang/en-us';
 import { openURL } from 'quasar';
 
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 class MenuItem {
   constructor(icon, label, link) {
@@ -191,8 +196,6 @@ const items = [
   new MenuItem('help', 'Help', 'help')
 ];
 
-const orgs = [];
-
 export default {
   name: 'MainLayout',
   data() {
@@ -206,14 +209,19 @@ export default {
       items: items,
       accountItems: accountItems,
       manageItems: manageItems,
-      orgs: orgs
     };
   },
   computed: {
     ...mapGetters({
       getUserById: 'users/byId',
-      getOrgsRelated: 'Organization/related'
+      getOrgsRelated: 'Organization/related',
+      isLoggedIn: 'user/isLoggedIn',
+      getUserId: 'user/getUserId'
     }),
+    userOrgs() {
+      const parent = { type: 'users', id: this.getUserId };
+      return this.getOrgsRelated({ parent });
+    },
     selectedOrgLabel() {
       let label = 'No Organization';
       if (this.$route.name === 'graphs') {
@@ -241,7 +249,7 @@ export default {
       loadOrgsRelated: 'Organization/loadRelated'
     }),
     orgById(orgId) {
-      return this.orgs.find(org => org.id == orgId);
+      return this.userOrgs.find(org => org.id == orgId);
     },
     openFaq() {
       return openURL('https://clair-berlin.de/faq.html');
@@ -253,20 +261,15 @@ export default {
       }
       window.location.href = url;
     },
-    loadUserOrgs: async function() {
+    async loadUserOrgs() {
       const uid = await this.$store.dispatch('user/getUserId');
       await this.loadUserById({ id: uid });
       let parent = { type: 'users', id: uid };
       await this.loadOrgsRelated({ parent });
-      const orgs = this.getOrgsRelated({ parent });
-      this.orgs = orgs;
     },
     setLang(lang) {
       this.$i18n.locale = lang;
       this.$q.lang.set(lang === 'en' ? en : de);
-    },
-    isLoggedIn() {
-      return this.$store.getters['user/isLoggedIn'];
     },
     logout() {
       this.$q.loading.show();
@@ -288,6 +291,9 @@ export default {
         })
         .finally(() => this.$q.loading.hide());
     }
+  },
+  async mounted() {
+    this.loadUserOrgs();
   }
 };
 </script>
