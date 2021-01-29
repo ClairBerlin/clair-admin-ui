@@ -208,7 +208,7 @@ export default {
       selected: '-',
       items: items,
       accountItems: accountItems,
-      manageItems: manageItems,
+      manageItems: manageItems
     };
   },
   computed: {
@@ -293,7 +293,13 @@ export default {
     }
   },
   async mounted() {
-    this.loadUserOrgs();
+    await this.loadUserOrgs();
+    if (this.userOrgs.length) {
+      const orgToView = this.userOrgs[0].id;
+      this.$router.push({ name: 'graphs', params: { orgId: orgToView } });
+    } else {
+      this.$router.push({ name: 'org-management' });
+    }
   }
 };
 </script>
