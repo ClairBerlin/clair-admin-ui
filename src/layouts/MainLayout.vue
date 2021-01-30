@@ -30,7 +30,7 @@
             <q-item
               clickable
               v-close-popup
-              v-for="org in userOrgs"
+              v-for="org in allOrganizations"
               :key="org.id"
             >
               <q-item-section
@@ -208,13 +208,14 @@ export default {
       selected: '-',
       items: items,
       accountItems: accountItems,
-      manageItems: manageItems,
+      manageItems: manageItems
     };
   },
   computed: {
     ...mapGetters({
       getUserById: 'users/byId',
-      getOrgsRelated: 'Organization/related',
+      getOrgsRelated: 'Organization/related', // Needs parent arg -> not reactive.
+      allOrganizations: 'Organization/all',
       isLoggedIn: 'user/isLoggedIn',
       getUserId: 'user/getUserId'
     }),
@@ -293,7 +294,13 @@ export default {
     }
   },
   async mounted() {
-    this.loadUserOrgs();
+    await this.loadUserOrgs();
+    if (this.userOrgs.length) {
+      const orgToView = this.userOrgs[0].id;
+      this.$router.push({ name: 'graphs', params: { orgId: orgToView } });
+    } else {
+      this.$router.push({ name: 'org-management' });
+    }
   }
 };
 </script>
