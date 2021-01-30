@@ -2,7 +2,11 @@
   <q-page class="q-pa-md row items-start q-gutter-md">
     <q-card v-if="installations.length == 0">
       <q-card-section class="text-h4">
-        {{ $t('No installations found') }}
+        {{$t('graph.no_sensors_header')}}
+      </q-card-section>
+      <q-separator/>
+      <q-card-section>
+        {{ $t('graphs.no_installations') }}
       </q-card-section>
     </q-card>
     <installation-card

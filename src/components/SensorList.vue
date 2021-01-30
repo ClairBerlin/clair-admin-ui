@@ -7,7 +7,7 @@
       v-for="sensor in sensors"
       :key="sensor.id"
     >
-      <q-tooltip>{{ $t('Click to edit sensor details') }}</q-tooltip>
+      <q-tooltip>{{$t('sensorlist.edit_tooltip')}}</q-tooltip>
       <q-item-section>{{ sensor.attributes.alias }}</q-item-section>
       <q-item-section avatar>
         <q-icon name="edit" />
@@ -20,9 +20,8 @@
       key="add-new-sensor"
       @click="openAddSensorDialog()"
     >
-      <q-tooltip>{{ $t('Click to add a new sensor') }}</q-tooltip>
-      <q-item-section class="text-grey">
-        {{ $t('Add new sensor') }}</q-item-section
+      <q-tooltip>{{$t('sensorlist.add_tooltip')}}</q-tooltip>
+      <q-item-section class="text-grey">{{$t('sensorlist.add')}}</q-item-section
       >
       <q-item-section avatar>
         <q-icon name="add" />
