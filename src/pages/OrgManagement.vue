@@ -57,7 +57,8 @@
           />
         </q-card-section>
         <q-card-section>
-          <div class="text-subtitle3">You will be its owner</div>
+          <div class="text-subtitle3">An organization typically is the legal entity that operates rooms and the sensors therein.</div>
+          <div class="text-subtitle3">Upon creation of a new organization, you will become its first administrator.</div>
         </q-card-section>
 
         <q-separator />
@@ -66,30 +67,31 @@
           <q-form @submit="createOrg" @reset="resetForm" class="q-gutter-md">
             <q-input
               filled
+              clearable
               v-model="newOrgName"
               label="Organization"
               hint="Name of your new organization"
-              lazy-rules
               :rules="[
                 val =>
-                  (val && val.length > 2) ||
-                  'Please enter an organization name of at least three characters.'
+                  (val && val.length > 2 && val.length <= 50) ||
+                  'Please enter an organization name between three and fifty characters in length.'
               ]"
             />
 
             <q-input
               filled
+              clearable
+              autogrow
               v-model="newOrgDesc"
               label="Description (optional)"
               hint="Describe your organization"
-              lazy-rules
             />
             <q-card-actions align="right">
               <q-btn
                 label="Create Organization"
                 type="submit"
+                :loading="submitting"
                 color="primary"
-                v-close-popup
               />
               <q-btn
                 label="Clear"
@@ -125,7 +127,8 @@ export default {
       isMemberLoadingError: null,
       orgMembers: [], // Members of all organizations the authenticated user is a member of.
       newOrgName: null,
-      newOrgDesc: null
+      newOrgDesc: null,
+      submitting: false
     };
   },
   watch: {
@@ -158,7 +161,7 @@ export default {
       loadRelatedMembers: 'Membership/loadRelated'
     }),
     async fetchMembers() {
-      // For now, assume that the organizations are fetched already.
+      // Assume that the organizations are fetched already upon app start.
       this.areMembersLoading = true;
       const organizations = this.allOrganizations;
       try {
@@ -197,6 +200,7 @@ export default {
         type: 'Organization'
       };
       try {
+        this.submitting = true
         await this.$store.dispatch('Organization/create', newOrg);
         this.$q.notify({
           color: 'green-4',
@@ -213,6 +217,8 @@ export default {
           message: `Could not create the organization ${newOrg.attributes.name}; maybe it already exists?`
         });
       } finally {
+        this.submitting = false
+        this.addOrgDialog = false
         this.resetForm();
       }
     }
