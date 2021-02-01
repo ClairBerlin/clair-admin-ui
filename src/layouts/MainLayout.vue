@@ -62,7 +62,7 @@
                 @click="openAccountSettings(item.path)"
               >
                 <q-item-section>
-                  {{ item.name }}
+                  {{ $t(item.nameKey) }}
                 </q-item-section>
               </q-item>
             </template>
@@ -186,6 +186,18 @@ const manageItems = [
   new MenuItem('fa fa-thermometer-half', 'Sensors', 'sensors'),
   new MenuItem('fa fa-tools', 'Installations', 'installations')
 ];
+const accountItems = [
+  {
+    nameKey: 'main.account.change_email',
+    path: '/accounts/email',
+    newTab: true
+  },
+  {
+    nameKey: 'main.account.change_password',
+    path: '/accounts/password/change',
+    newTab: false
+  }
+];
 const items = [
   new MenuItem('feedback', 'Feedback', 'feedback'),
   new MenuItem('help', 'Help', 'help')
@@ -202,18 +214,7 @@ export default {
       ],
       selected: '-',
       items: items,
-      accountItems: [
-        {
-          name: this.$t('main.account.change_email'),
-          path: '/accounts/email',
-          newTab: true
-        },
-        {
-          name: this.$t('main.account.change_password'),
-          path: '/accounts/password/change',
-          newTab: false
-        }
-      ],
+      accountItems: accountItems,
       manageItems: manageItems
     };
   },
