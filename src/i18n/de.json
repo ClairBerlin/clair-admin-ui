@@ -1,0 +1,75 @@
+{
+  "404": {
+    "msg": "Huch! Hier ist nichts.",
+    "home": "Zurück zur Startseite."
+  },
+  "main": {
+    "manage-org": "Meine Organisationen verwalten",
+    "manage-account": "Mein Konto verwalten",
+    "help": "Hilfe",
+    "feedback": "Feedback",
+    "logout_failure": "Logout fehlgeschlagen",
+    "account": {
+      "change_password": "Passwort ändern",
+      "change_email": "Email-Adresse ändern"
+    }
+  },
+  "Login": "Anmeldung",
+  "Username": "Nutzername",
+  "Password": "Passwort",
+  "Submit": "Einloggen",
+  "Please enter your username": "Bitte geben Sie Ihren Nutzernamen ein",
+  "Please enter your password": "Bitte geben Sie Ihr Passwort ein",
+  "Login failed": "Anmeldung ist fehlgeschlagen",
+  "Logout failed": "Abmeldung ist fehlgeschlagen",
+  "Overview": "Überblick",
+  "Manage": "Verwalten",
+  "Organizations": "Organisationen",
+  "Locations": "Orte",
+  "Rooms": "Räume",
+  "Sensors": "Sensoren",
+  "Installations": "Installationen",
+  "Settings": "Einstellungen",
+  "My Account": "Mein Konto",
+  "No installations found": "Keine Installationen gefunden",
+  "Uninstalled Sensors": "Nicht installierte Sensoren",
+  "Add new location": "Neuen Ort hinzufügen",
+  "Add new room": "Neuen Raum hinzufügen",
+  "Click to edit sensor details": "Sensorendetails bearbeiten",
+  "Click to add a new sensor": "Sensor hinzufügen",
+  "Add new sensor": "Neuen Sensor hinzufügen",
+  "graphs": {
+    "no_installations": "Es scheinen keine Sensoren installiert zu sein in den Räumen der gewählten Organisation."
+  },
+  "org": {
+    "title": "Organisationen verwalten",
+    "org_loading": "Lädt...",
+    "org_loading_error": "Fehler beim Laden der Organisationen oder ihrer Mitglieder.",
+    "add": {
+      "add_org": "Organisation hinzufügen",
+      "org_explanation": "Eine Organisation ist die Einheit, welche Räume und Sensoren betreibt.",
+      "create_explanation": "Beim Anlegen einer neuen Organisation erhälst Du automatisch Administrator-Rechte für diese.",
+      "header": "Organisation",
+      "name_org": "Name der neuen Organisation",
+      "val_namelength": "Der Name muss zwischen drei und fünfzig Zeichen lang sein.",
+      "description": "Beschreibung (optional)",
+      "description_explanation": "Beschreibe Deine Organisation",
+      "do_add": "Organisation anlegen",
+      "submitting": "anlegen...",
+      "created": "Die Organisation {name} wurde erstellt.",
+      "create_error": "Konnte die Organisation {name} nicht anlegen; vielleicht existiert sie bereits?"
+    },
+    "member_loading_error": "Fehler beim Laden der Organisationsmiglieder."
+  },
+  "clear": "Zurücksetzen",
+  "cancel": "Abbrechen",
+  "no_org": "Keine Organisation ausgewählt",
+  "sensorlist": {
+    "edit_tooltip": "Klicken, um Sensordetails zu bearbeiten.",
+    "add_tooltip": "Klicken, um Sensor hinzuzufügen.",
+    "add": "Sensor hinzufügen"
+  },
+  "graph": {
+    "no_sensors_header": "Keine Sensoren installiert"
+  }
+}

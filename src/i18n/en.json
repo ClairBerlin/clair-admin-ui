@@ -1,0 +1,51 @@
+{
+  "404": {
+    "msg": "Oops, nothing here to see.",
+    "home": "Back to the main page."
+  },
+  "main": {
+    "manage-org": "Manage my Organizations",
+    "manage-account": "Manage my Account",
+    "help": "Help",
+    "feedback": "Feedback",
+    "logout_failure": "Logout failed",
+    "account": {
+      "change_password": "Change Password",
+      "change_email": "Change Email"
+    }
+  },
+  "graphs": {
+    "no_installations": "No sensors seem to be installed in any rooms of the selected organization."
+  },
+  "org": {
+    "title": "Manage Organizations",
+    "org_loading": "Loading...",
+    "org_loading_error": "Error loading organizations or members.",
+    "add": {
+      "add_org": "Add Organization",
+      "org_explanation": "An organization typically is the legal entity that operates rooms and the sensors therein.",
+      "create_explanation": "Upon creation of a new organization, you will become its first administrator.",
+      "header": "Organization",
+      "name_org": "Name of your new organization",
+      "val_namelength": "Please enter an organization name between three and fifty characters in length.",
+      "description": "Description (optional)",
+      "description_explanation": "Describe your organization",
+      "do_add": "Create Organization",
+      "submitting": "submitting...",
+      "created": "Organization {name} created.",
+      "create_error": "Could not create the organization {name}; maybe it already exists?"
+    },
+    "member_loading_error": "Could not fetch members of all organizations."
+  },
+  "clear": "Clear",
+  "cancel": "Cancel",
+  "no_org": "No Organization",
+  "sensorlist": {
+    "edit_tooltip": "Click to edit sensor details",
+    "add_tooltip": "Click to add a new sensor",
+    "add": "Add sensor"
+  },
+  "graph": {
+    "no_sensors_header": "No Sensors Installed"
+  }
+}

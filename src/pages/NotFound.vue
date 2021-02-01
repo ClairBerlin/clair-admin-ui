@@ -8,7 +8,7 @@
       </div>
 
       <div class="text-h2" style="opacity:.4">
-        {{ $t('Oops. Nothing here...') }}
+        {{ $t('404.msg') }}
       </div>
 
       <q-btn
@@ -17,7 +17,7 @@
         text-color="blue"
         unelevated
         to="/"
-        :label="$t('Go Home')"
+        :label="$t('404.home')"
         no-caps
       />
     </div>

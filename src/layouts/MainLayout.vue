@@ -14,7 +14,7 @@
           />
           <img class="clair-logo" src="~assets/clair-logo.svg" />
           <q-toolbar-title class="clair-title">
-            Clair Admin UI
+            Clair Dashboard
           </q-toolbar-title>
         </div>
 
@@ -47,11 +47,11 @@
                 <q-icon name="groups" />
               </q-item-section>
               <q-item-section @click="$router.push({ name: 'org-management' })">
-                Manage my Organizations
+                {{ $t('main.manage-org') }}
               </q-item-section>
             </q-item>
             <q-separator />
-            <q-item-label header>Manage my Account</q-item-label>
+            <q-item-label header>{{ $t('main.manage-account') }}</q-item-label>
             <template v-for="item in accountItems">
               <q-item
                 :key="item.name"
@@ -62,7 +62,7 @@
                 @click="openAccountSettings(item.path)"
               >
                 <q-item-section>
-                  {{ $t(item.name) }}
+                  {{ $t(item.nameKey) }}
                 </q-item-section>
               </q-item>
             </template>
@@ -143,7 +143,7 @@
             <q-icon name="feedback" />
           </q-item-section>
           <q-item-section>
-            {{ $t('Feedback') }}
+            {{ $t('main.feedback') }}
           </q-item-section>
         </q-item>
 
@@ -152,7 +152,7 @@
             <q-icon name="help" />
           </q-item-section>
           <q-item-section>
-            {{ $t('Help') }}
+            {{ $t('main.help') }}
           </q-item-section>
         </q-item>
       </q-list>
@@ -179,17 +179,24 @@ class MenuItem {
   }
 }
 
-const accountItems = [
-  { name: 'Manage Email', path: '/accounts/email', newTab: true },
-  { name: 'Change Password', path: '/accounts/password/change', newTab: false }
-];
-
 const manageItems = [
   new MenuItem('fa fa-sitemap', 'Organizations', 'org-management'),
   new MenuItem('fa fa-map-marker', 'Locations', 'locations'),
   new MenuItem('fa fa-cube', 'Rooms', 'rooms'),
   new MenuItem('fa fa-thermometer-half', 'Sensors', 'sensors'),
   new MenuItem('fa fa-tools', 'Installations', 'installations')
+];
+const accountItems = [
+  {
+    nameKey: 'main.account.change_email',
+    path: '/accounts/email',
+    newTab: true
+  },
+  {
+    nameKey: 'main.account.change_password',
+    path: '/accounts/password/change',
+    newTab: false
+  }
 ];
 const items = [
   new MenuItem('feedback', 'Feedback', 'feedback'),
@@ -224,7 +231,7 @@ export default {
       return this.getOrgsRelated({ parent });
     },
     selectedOrgLabel() {
-      let label = 'No Organization';
+      let label = this.$t('no_org');
       if (this.$route.name === 'graphs') {
         const selectedOrg = this.orgById(this.$route.params.orgId);
         if (selectedOrg) {
@@ -235,7 +242,7 @@ export default {
     },
     headerLabel() {
       if (this.$route.name === 'org-management') {
-        return 'Manage Organizations';
+        return this.$t('main.manage-org');
       } else {
         return this.selectedOrgLabel;
       }
@@ -287,7 +294,7 @@ export default {
             color: 'red-5',
             textColor: 'white',
             icon: 'warning',
-            message: this.$t('Logout failed').toString()
+            message: this.$t('main.logout_failure')
           });
         })
         .finally(() => this.$q.loading.hide());

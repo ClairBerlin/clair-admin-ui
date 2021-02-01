@@ -1,11 +1,11 @@
 <template>
   <q-page padding>
-    <div class="text-h4">Manage Organizations</div>
+    <div class="text-h4">{{ $t('org.title') }}</div>
     <div class="q-pa-md" style="max-width: 500px">
       <q-list bordered separator>
-        <p v-if="isLoading">Loading...</p>
+        <p v-if="isLoading">{{ $t('org.org_loading') }}</p>
         <p v-else-if="isLoadingError">
-          Error loading organizations or members.
+          {{ $t('org.org_loading_error') }}
         </p>
         <ul v-else>
           <q-expansion-item
@@ -36,7 +36,7 @@
             <q-item-section avatar>
               <q-icon name="group_add" />
             </q-item-section>
-            <q-item-section>Add Organization</q-item-section>
+            <q-item-section>{{ $t('org.add.add_org') }}</q-item-section>
           </q-item>
         </ul>
       </q-list>
@@ -45,7 +45,7 @@
     <q-dialog v-model="addOrgDialog">
       <q-card class="my-card">
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Add an Organization</div>
+          <div class="text-h6">{{ $t('org.add.add_org') }}</div>
           <q-space />
           <q-btn
             icon="close"
@@ -57,8 +57,10 @@
           />
         </q-card-section>
         <q-card-section>
-          <div class="text-subtitle3">An organization typically is the legal entity that operates rooms and the sensors therein.</div>
-          <div class="text-subtitle3">Upon creation of a new organization, you will become its first administrator.</div>
+          <div class="text-subtitle3">{{ $t('org.add.org_explanation') }}</div>
+          <div class="text-subtitle3">
+            {{ $t('org.add.create_explanation') }}
+          </div>
         </q-card-section>
 
         <q-separator />
@@ -69,12 +71,12 @@
               filled
               clearable
               v-model="newOrgName"
-              label="Organization"
-              hint="Name of your new organization"
+              :label="$t('org.add.header')"
+              :hint="$t('org.add.name_org')"
               :rules="[
                 val =>
                   (val && val.length > 2 && val.length <= 50) ||
-                  'Please enter an organization name between three and fifty characters in length.'
+                  this.$t('org.add.val_namelength')
               ]"
             />
 
@@ -83,25 +85,25 @@
               clearable
               autogrow
               v-model="newOrgDesc"
-              label="Description (optional)"
-              hint="Describe your organization"
+              :label="$t('org.add.description')"
+              :hint="$t('org.add.description_explanation')"
             />
             <q-card-actions align="right">
               <q-btn
-                label="Create Organization"
+                :label="$t('org.add.do_add')"
                 type="submit"
-                :loading="submitting"
+                :loading="$t('org.add.submitting')"
                 color="primary"
               />
               <q-btn
-                label="Clear"
+                :label="$t('clear')"
                 type="reset"
                 color="primary"
                 flat
                 class="q-ml-sm"
               />
               <q-btn
-                label="Cancel"
+                :label="$t('cancel')"
                 type="reset"
                 color="primary"
                 flat
@@ -181,7 +183,7 @@ export default {
           color: 'red',
           textColor: 'white',
           icon: 'error',
-          message: `Could not fetch members of all organizations.`
+          message: this.$t('org.member_loading_error')
         });
       } finally {
         this.areMembersLoading = false;
@@ -200,13 +202,15 @@ export default {
         type: 'Organization'
       };
       try {
-        this.submitting = true
+        this.submitting = true;
         await this.$store.dispatch('Organization/create', newOrg);
         this.$q.notify({
           color: 'green-4',
           textColor: 'white',
           icon: 'cloud_done',
-          message: `Organization ${newOrg.attributes.name} created.`
+          message: this.$t('org.add.created', {
+            name: newOrg.attributes.name
+          })
         });
       } catch (error) {
         console.log(error);
@@ -214,11 +218,13 @@ export default {
           color: 'red',
           textColor: 'white',
           icon: 'error',
-          message: `Could not create the organization ${newOrg.attributes.name}; maybe it already exists?`
+          message: this.$t('org.add.create_error', {
+            name: newOrg.attributes.name
+          })
         });
       } finally {
-        this.submitting = false
-        this.addOrgDialog = false
+        this.submitting = false;
+        this.addOrgDialog = false;
         this.resetForm();
       }
     }
