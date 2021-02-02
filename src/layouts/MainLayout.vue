@@ -292,11 +292,14 @@ export default {
   },
   async mounted() {
     await this.loadUserAndOrgs();
-    if (this.memberships.length) {
-      const orgToView = this.memberships[0].orgId;
-      this.$router.push({ name: 'graphs', params: { orgId: orgToView } });
-    } else {
-      this.$router.push({ name: 'org-management' });
+    // Set the default page if none is explicitly given via the URL.
+    if (this.$route.name && this.$route.name === 'dashboard') {
+      if (this.memberships.length) { // The authenticated is organization member.
+        const orgToView = this.memberships[0].orgId;
+        this.$router.push({ name: 'graphs', params: { orgId: orgToView } });
+      } else { // The authenticated user is not yet member in any organization.
+        this.$router.push({ name: 'org-management' });
+      }
     }
   }
 };
