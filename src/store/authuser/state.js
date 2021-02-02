@@ -1,12 +1,13 @@
 export default function() {
   return {
     error: undefined,
-    isLoading: false,
+    userIsLoading: false,
+    membershipsAreLoading: false,
     id: undefined,
     email: undefined,
-    first_name: undefined,
-    last_name: undefined,
-    username: undefined,
+    firstName: undefined,
+    lastName: undefined,
+    userName: undefined,
     memberships: []
    };
 }

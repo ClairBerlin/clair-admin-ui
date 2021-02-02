@@ -11,15 +11,15 @@
           <q-expansion-item
             expand-separator
             default-closed
-            v-for="org in allOrganizations"
-            :key="org.id"
-            v-bind:label="org.attributes.name"
-            v-bind:caption="'Members: ' + orgMembers[org.id].length"
+            v-for="ms in memberships"
+            :key="ms.orgId"
+            v-bind:label="ms.orgName"
+            v-bind:caption="'Members: ' + orgMembers[ms.orgId].length"
           >
             <q-list
               bordered
               separator
-              v-for="member in orgMembers[org.id]"
+              v-for="member in orgMembers[ms.orgId]"
               :key="member.id"
             >
               <q-item clickable v-ripple>
@@ -92,7 +92,7 @@
               <q-btn
                 :label="$t('org.add.do_add')"
                 type="submit"
-                :loading="$t('org.add.submitting')"
+                :loading="submitting"
                 color="primary"
               />
               <q-btn
@@ -135,12 +135,12 @@ export default {
   },
   watch: {
     // Fetch the users of all organizations the currently authenticated users is a
-    // member of. Because the organizations themselves are loaded asynchronously, watch
-    // them and load the users once the organizations are available.
-    allOrganizations: {
-      immediate: true, // Trigger user fetch, in case organizations are already loaded.
+    // member of. Because the memberships themselves are loaded asynchronously, watch
+    // them and load the users once they are available.
+    memberships: {
+      immediate: true, // Trigger user fetch when loading the page.
       handler: async function(newOrgs) {
-        this.fetchMembers();
+        this.fetchOrgMembers();
       }
     }
   },
@@ -148,6 +148,9 @@ export default {
     ...mapGetters({
       organizationIsLoading: 'Organization/isLoading',
       organizationIsError: 'Organization/isError',
+      membershipsAreLoading: 'authuser/isLoading',
+      membershipsError: 'authuser/isError',
+      memberships: 'authuser/getMemberships',
       allOrganizations: 'Organization/all',
       getRelatedMembers: `Membership/related`
     }),
@@ -155,26 +158,30 @@ export default {
       return this.organizationIsLoading || this.areMembersLoading;
     },
     isLoadingError() {
-      return this.organizationIsError || this.isMemberLoadingError;
+      return this.organizationIsError || this.isMemberLoadingError || this.membershipsError;
     }
   },
   methods: {
     ...mapActions({
-      loadRelatedMembers: 'Membership/loadRelated'
+      loadRelatedMembers: 'Membership/loadRelated',
+      fetchMemberships: 'authuser/fetchMemberships',
+      createOrganization: 'Organization/create'
     }),
-    async fetchMembers() {
+    async fetchOrgMembers() {
+      if (!this.memberships) {
+        return
+      }
       // Assume that the organizations are fetched already upon app start.
       this.areMembersLoading = true;
-      const organizations = this.allOrganizations;
       try {
-        for (const org of organizations) {
+        for (const ms of this.memberships) {
           // This loop will execute in order, despite the asynchronous fetch.
           // See https://lavrton.com/javascript-loops-how-to-handle-async-await-6252dd3c795/
-          const parent = { type: 'organizations', id: org.id };
+          const parent = { type: 'organizations', id: ms.orgId };
           await this.loadRelatedMembers({ parent });
           const members = this.getRelatedMembers({ parent });
           // Reactively change the array. See https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-          this.$set(this.orgMembers, org.id, members);
+          this.$set(this.orgMembers, ms.orgId, members);
         }
       } catch (error) {
         console.log(error);
@@ -203,7 +210,8 @@ export default {
       };
       try {
         this.submitting = true;
-        await this.$store.dispatch('Organization/create', newOrg);
+        await this.createOrganization(newOrg);
+        await this.fetchMemberships();
         this.$q.notify({
           color: 'green-4',
           textColor: 'white',

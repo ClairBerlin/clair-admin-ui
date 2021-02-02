@@ -4,6 +4,12 @@ const getters = {
   isLoggedIn(authuser) {
     return authuser.id !== null && Cookies.has('csrftoken');
   },
+  isLoading(authUser) {
+    return authUser.userIsLoading || authUser.membershipsAreLoading
+  },
+  isError(authuser) {
+    return authuser.error;
+  },
   getId(authuser) {
     return authuser.id ? authuser.id : undefined;
   },

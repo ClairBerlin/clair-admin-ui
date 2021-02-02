@@ -1,9 +1,15 @@
 const mutation = {
-  START_LOADING(authuser) {
-    authuser.isLoading = true;
+  START_USERLOADING(authuser) {
+    authuser.userIsLoading = true;
   },
-  STOP_LOADING(authuser) {
-    authuser.isLoading = false;
+  STOP_USERLOADING(authuser) {
+    authuser.userIsLoading = false;
+  },
+  START_MEMBERSHIPSLOADING(authuser){
+    authuser.membershipsAreLoading = true;
+  },
+  STOP_MEMBERSHIPSLOADING(authuser){
+    authuser.membershipsAreLoading = false;
   },
   MARK_ERROR(authuser) {
     authuser.error = true;
