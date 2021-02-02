@@ -30,15 +30,15 @@
             <q-item
               clickable
               v-close-popup
-              v-for="org in allOrganizations"
-              :key="org.id"
+              v-for="ms in memberships"
+              :key="ms.orgId"
             >
               <q-item-section
                 @click="
-                  $router.push({ name: 'graphs', params: { orgId: org.id } })
+                  $router.push({ name: 'graphs', params: { orgId: ms.orgId } })
                 "
               >
-                {{ org.attributes.name }}
+                {{ ms.orgName }}
               </q-item-section>
             </q-item>
             <q-separator />
@@ -169,7 +169,7 @@ import de from 'quasar/lang/de';
 import en from 'quasar/lang/en-us';
 import { openURL } from 'quasar';
 
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 class MenuItem {
   constructor(icon, label, link) {
@@ -212,7 +212,6 @@ export default {
         { value: 'en', label: 'English' },
         { value: 'de', label: 'Deutsch' }
       ],
-      selected: '-',
       items: items,
       accountItems: accountItems,
       manageItems: manageItems
@@ -220,22 +219,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getUserById: 'users/byId',
-      getOrgsRelated: 'Organization/related', // Needs parent arg -> not reactive.
-      allOrganizations: 'Organization/all',
-      isLoggedIn: 'user/isLoggedIn',
-      getUserId: 'user/getUserId'
+      isLoggedIn: 'authuser/isLoggedIn',
+      userId: 'authuser/getId',
+      memberships: 'authuser/getMemberships',
+      membershipByOrgId: 'authuser/getMembershipByOrgId'
     }),
-    userOrgs() {
-      const parent = { type: 'users', id: this.getUserId };
-      return this.getOrgsRelated({ parent });
-    },
     selectedOrgLabel() {
       let label = this.$t('no_org');
       if (this.$route.name === 'graphs') {
-        const selectedOrg = this.orgById(this.$route.params.orgId);
+        const selectedOrg = this.membershipByOrgId(this.$route.params.orgId);
         if (selectedOrg) {
-          label = selectedOrg.attributes.name;
+          label = selectedOrg.orgName;
         }
       }
       return label;
@@ -253,12 +247,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      loadUserById: 'users/loadById',
-      loadOrgsRelated: 'Organization/loadRelated'
+      loadOrgsRelated: 'Organization/loadRelated',
+      fetchAuthenticatedUser: 'authuser/fetchAuthenticatedUser'
     }),
-    orgById(orgId) {
-      return this.userOrgs.find(org => org.id == orgId);
-    },
     openFaq() {
       return openURL('https://clair-berlin.de/faq.html');
     },
@@ -269,10 +260,9 @@ export default {
       }
       window.location.href = url;
     },
-    async loadUserOrgs() {
-      const uid = await this.$store.dispatch('user/getUserId');
-      await this.loadUserById({ id: uid });
-      let parent = { type: 'users', id: uid };
+    async loadUserAndOrgs() {
+      await this.fetchAuthenticatedUser();
+      let parent = { type: 'users', id: this.userId };
       await this.loadOrgsRelated({ parent });
     },
     setLang(lang) {
@@ -282,7 +272,7 @@ export default {
     logout() {
       this.$q.loading.show();
       this.$store
-        .dispatch('user/logout')
+        .dispatch('authuser/logout')
         .then(() => {
           this.$q.cookies.remove('csrftoken');
           window.location.href = window.location.origin + '/accounts/login/';
@@ -301,9 +291,9 @@ export default {
     }
   },
   async mounted() {
-    await this.loadUserOrgs();
-    if (this.userOrgs.length) {
-      const orgToView = this.userOrgs[0].id;
+    await this.loadUserAndOrgs();
+    if (this.memberships.length) {
+      const orgToView = this.memberships[0].orgId;
       this.$router.push({ name: 'graphs', params: { orgId: orgToView } });
     } else {
       this.$router.push({ name: 'org-management' });
