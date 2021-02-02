@@ -1,9 +1,9 @@
-import state, { UserState } from './state';
+import state from './state';
 import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
 
-const user = {
+const authuser = {
   namespaced: true,
   actions,
   getters,
@@ -11,4 +11,4 @@ const user = {
   state,
 };
 
-export default user;
+export default authuser;

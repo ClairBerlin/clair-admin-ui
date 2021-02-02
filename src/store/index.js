@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import { resourceModule, mapResourceModules } from '@reststate/vuex';
-import user from './user';
+import authuser from './authuser';
 
 Vue.use(Vuex);
 
@@ -43,7 +43,7 @@ axios.interceptors.response.use(
 export default (function() {
   const Store = new Vuex.Store({
     modules: {
-      user,
+      authuser,
       Address: resourceModule({
         name: 'addresses',
         httpClient: httpClient
