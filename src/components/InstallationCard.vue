@@ -62,6 +62,7 @@
       <q-spinner-radio v-if="errorOccurred" size="75px" color="red" />
       <q-spinner-pie v-else size="75px" color="primary" />
     </q-inner-loading>
+    <privacy-toggle :installationId="installationId" />
   </q-card>
 </template>
 
@@ -69,10 +70,12 @@
 import { mapActions, mapGetters } from 'vuex';
 import dayjs from '../utils/time.js';
 import SampleGraph from '../components/SampleGraph.vue';
+import PrivacyToggle from '../components/PrivacyToggle'
 
 export default {
   components: {
-    SampleGraph
+    SampleGraph,
+    PrivacyToggle
   },
   props: {
     siteName: String,
@@ -98,7 +101,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getInstallationById: 'installations/byId'
+      getInstallationById: 'Installation/byId'
     }),
     previousFromMoment: function() {
       return [
@@ -187,7 +190,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      loadInstallationById: 'installations/loadById'
+      loadInstallationById: 'Installation/loadById'
     }),
     getTabIndex() {
       const tab = this.selectedTab;

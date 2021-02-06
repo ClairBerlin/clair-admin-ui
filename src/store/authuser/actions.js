@@ -32,13 +32,13 @@ const actions = {
       const authUser = await axios.get('/api/v1/auth/user');
       const userId = authUser.data.data.id;
       await context.dispatch(
-        'users/loadById',
+        'User/loadById',
         { id: userId },
         {
           root: true
         }
       );
-      const userInfo = context.rootGetters['users/byId']({ id: userId });
+      const userInfo = context.rootGetters['User/byId']({ id: userId });
       context.commit('SET_ID', userId);
       context.commit('SET_AUTHUSER', userInfo.attributes);
       context.dispatch('fetchMemberships');
