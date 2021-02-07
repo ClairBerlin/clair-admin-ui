@@ -49,7 +49,7 @@
     "no_sensors_header": "No Sensors Installed"
   },
   "toggle": {
-    "measurements": "Measurements are",
+    "measurements": "Measurements are ",
     "public": "public",
     "private": "private"
   }
