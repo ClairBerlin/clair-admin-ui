@@ -46,11 +46,10 @@ export default {
       getMembershipByOrgId: 'authuser/getMembershipByOrgId'
     }),
     publicLabel() {
-      return 'Measurements are ' + (this.isPublic ? 'public' : 'private');
+      return this.$t('toggle.measurements') + (this.isPublic ? this.$t('toggle.public') : this.$t('toggle.private'));
     },
     installationName() {
       return (
-        'from ' +
         this.site?.attributes.name +
         '/' +
         this.room?.attributes.name +

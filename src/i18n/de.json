@@ -71,5 +71,10 @@
   },
   "graph": {
     "no_sensors_header": "Keine Sensoren installiert"
+  },
+  "toggle": {
+    "measurements": "Messwerte sind ",
+    "public": "öffentlich",
+    "private": "nicht öffentlich"
   }
 }
