@@ -34,24 +34,24 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getSiteById: 'sites/byId',
-      getRoomsById: 'rooms/byId',
-      getRoomsRelated: 'rooms/related',
-      getInstallationsRelated: 'installations/related',
-      getSitesRelated: 'sites/related',
-      getNodeById: 'nodes/byId'
+      getSiteById: 'Site/byId',
+      getRoomById: 'Room/byId',
+      getRoomsRelated: 'Room/related',
+      getInstallationsRelated: 'Installation/related',
+      getSitesRelated: 'Site/related',
+      getNodeById: 'Node/byId'
     })
   },
   methods: {
     ...mapActions({
-      loadRoomsRelated: 'rooms/loadRelated',
-      loadInstallationsRelated: 'installations/loadRelated',
-      loadSitesRelated: 'sites/loadRelated',
-      loadNodeById: 'nodes/loadById'
+      loadRoomsRelated: 'Room/loadRelated',
+      loadInstallationsRelated: 'Installation/loadRelated',
+      loadSitesRelated: 'Site/loadRelated',
+      loadNodeById: 'Node/loadById'
     }),
     getRoom(installation) {
       const roomId = installation.relationships.room.data.id;
-      return this.getRoomsById({ id: roomId });
+      return this.getRoomById({ id: roomId });
     },
     getSiteName(installation) {
       const room = this.getRoom(installation);

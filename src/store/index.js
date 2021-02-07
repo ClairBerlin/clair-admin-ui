@@ -56,13 +56,28 @@ export default (function() {
         name: 'memberships',
         httpClient: httpClient
       }),
+      Room: resourceModule({
+        name: 'rooms',
+        httpClient: httpClient
+      }),
+      Site: resourceModule({
+        name: 'sites',
+        httpClient: httpClient
+      }),
+      User: resourceModule({
+        name: 'users',
+        httpClient: httpClient
+      }),
+      Node: resourceModule({
+        name: 'nodes',
+        httpClient: httpClient
+      }),
+      Installation: resourceModule({
+        name: 'installations',
+        httpClient: httpClient
+      }),
       ...mapResourceModules({
         names: [
-          'users',
-          'sites',
-          'rooms',
-          'nodes',
-          'installations',
           'installation-timeseries'
         ],
         httpClient

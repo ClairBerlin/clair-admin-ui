@@ -1,5 +1,5 @@
 <template>
-  <q-card class="row">
+  <q-card>
     <q-card-section>
       <!-- TODO: let the links point to the respective site/room/installation-->
       <q-toolbar class="bg-primary text-white shadow-2">
@@ -57,6 +57,9 @@
         </q-btn>
       </div>
     </q-card-section>
+    <q-card-section>
+      <privacy-toggle :installationId="installationId" />
+    </q-card-section>
 
     <q-inner-loading :showing="loading > 0 || errorOccurred">
       <q-spinner-radio v-if="errorOccurred" size="75px" color="red" />
@@ -69,10 +72,12 @@
 import { mapActions, mapGetters } from 'vuex';
 import dayjs from '../utils/time.js';
 import SampleGraph from '../components/SampleGraph.vue';
+import PrivacyToggle from '../components/PrivacyToggle'
 
 export default {
   components: {
-    SampleGraph
+    SampleGraph,
+    PrivacyToggle
   },
   props: {
     siteName: String,
@@ -98,7 +103,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getInstallationById: 'installations/byId'
+      getInstallationById: 'Installation/byId'
     }),
     previousFromMoment: function() {
       return [
@@ -187,7 +192,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      loadInstallationById: 'installations/loadById'
+      loadInstallationById: 'Installation/loadById'
     }),
     getTabIndex() {
       const tab = this.selectedTab;
