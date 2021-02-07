@@ -1,14 +1,5 @@
 <template>
-  <q-card class="row">
-    <q-card-section>
-      {{ site.attributes.name }}
-    </q-card-section>
-    <q-card-section>
-      {{ room.attributes.name }}
-    </q-card-section>
-    <q-card-section>
-      {{ node.attributes.alias }}
-    </q-card-section>
+  <q-card flat>
     <q-item tag="label" v-ripple :disabled="isPublicToggleDisabled">
       <q-item-section avatar>
         <q-toggle

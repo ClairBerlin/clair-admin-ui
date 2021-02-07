@@ -1,5 +1,5 @@
 <template>
-  <q-card class="row">
+  <q-card>
     <q-card-section>
       <!-- TODO: let the links point to the respective site/room/installation-->
       <q-toolbar class="bg-primary text-white shadow-2">
@@ -57,12 +57,14 @@
         </q-btn>
       </div>
     </q-card-section>
+    <q-card-section>
+      <privacy-toggle :installationId="installationId" />
+    </q-card-section>
 
     <q-inner-loading :showing="loading > 0 || errorOccurred">
       <q-spinner-radio v-if="errorOccurred" size="75px" color="red" />
       <q-spinner-pie v-else size="75px" color="primary" />
     </q-inner-loading>
-    <privacy-toggle :installationId="installationId" />
   </q-card>
 </template>
 
