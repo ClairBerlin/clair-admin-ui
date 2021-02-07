@@ -1,5 +1,5 @@
---- @reststate.ORIG/client/src/Resource.js	2021-01-21 08:44:31.000000000 +0100
-+++ @reststate/client/src/Resource.js	2021-01-21 08:47:27.000000000 +0100
+--- @reststate.ORIG/client/src/Resource.js	2021-01-12 08:45:25.000000000 +0100
++++ @reststate/client/src/Resource.js	2021-02-04 19:34:48.000000000 +0100
 @@ -48,7 +48,7 @@
      if (options.url) {
        ({ url } = options);
@@ -48,3 +48,19 @@
        .then(extractData)
        .catch(extractErrorResponse);
    }
+@@ -96,13 +96,13 @@
+     // http://jsonapi.org/faq/#wheres-put
+     const requestData = { data: record };
+     return this.api
+-      .patch(`${this.name}/${record.id}`, requestData)
++      .patch(`${this.name}/${record.id}/`, requestData)
+       .then(extractData)
+       .catch(extractErrorResponse);
+   }
+ 
+   delete({ id }) {
+-    return this.api.delete(`${this.name}/${id}`).catch(extractErrorResponse);
++    return this.api.delete(`${this.name}/${id}/`).catch(extractErrorResponse);
+   }
+ }
+ 
