@@ -14,24 +14,24 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.9.11",
+    "@quasar/extras": "^1.10.6",
     "@reststate/vuex": "^0.2.3",
     "axios": "^0.21.1",
     "chart.js": "^2.9.4",
-    "core-js": "^3.7.0",
-    "dayjs": "^1.9.6",
-    "quasar": "^1.14.7",
+    "core-js": "^3.13.1",
+    "dayjs": "^1.10.5",
+    "quasar": "^1.15.19",
     "vue-chartjs": "^3.5.1",
-    "vue-i18n": "^8.22.1"
+    "vue-i18n": "^8.24.4"
   },
   "devDependencies": {
-    "@quasar/app": "^2.1.11",
+    "@quasar/app": "^2.2.8",
     "@vue/devtools": "^5.3.3",
     "babel-eslint": "^10.0.1",
-    "eslint": "^7.13.0",
-    "eslint-config-prettier": "^7.1.0",
+    "eslint": "^7.27.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-loader": "^4.0.2",
-    "eslint-plugin-vue": "^7.1.0"
+    "eslint-plugin-vue": "^7.10.0"
   },
   "browserslist": [
     "last 10 Chrome versions",
