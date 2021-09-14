@@ -16,7 +16,7 @@
   "dependencies": {
     "@quasar/extras": "^1.10.9",
     "@reststate/vuex": "^0.2.3",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "chart.js": "^2.9.4",
     "core-js": "^3.13.1",
     "dayjs": "^1.10.5",
