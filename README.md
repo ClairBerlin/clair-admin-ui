@@ -1,5 +1,8 @@
 # Clair Admin UI (clair-admin-ui)
 
+
+NOTE: deprecated in favor of [COMO-UI](https://github.com/ClairBerlin/como-ui)!
+
 The Clair Admin UI is part of the _Clair Platform_, a system to collect measurements from networked CO2-sensors for indoor air-quality monitoring. It is developed and run by the [Clair Berlin Initiative](https://clair-berlin.de), a non-profit, open-source initiative to help operators of public spaces lower the risk of SARS-CoV2-transmission amongst their patrons.
 
 Technically speaking, Clair Admin UI is a Single-Page Web-Application (SPA) that is served by a webserver in the [Clair Stack](https://github.com/ClairBerlin/clair-stack), the infrastructure-as-code implementation of the Clair Platform.
